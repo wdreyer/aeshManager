@@ -10,6 +10,13 @@ router.get('/', function(req, res, next) {
     })
 });
 
+router.get('/getOne/:id', function(req, res, next) {
+    Enfant.findById(req.params.id)
+    .then((data) => {
+        res.json({data : data})
+    })
+});
+
 router.put('/update', function (req,res,next){
     Enfant.updateOne({
          _id : req.body.enfantID},
