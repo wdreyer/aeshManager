@@ -1,0 +1,67 @@
+.modal {
+  display: flex;
+  flex-direction: row;
+  width: 95%;
+  justify-content: center;
+}
+.rightSide {
+  margin: 20px;
+  width: 250px;
+  height: 200px;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 3%), 0 1px 6px -1px rgb(0 0 0 / 2%), 0 2px 4px 0 rgb(0 0 0 / 2%);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #ececec;
+  align-items: center;
+  border-radius: 5px;
+  padding-top: 4px;
+  padding-bottom:4px ;
+}
+
+.calendar {
+  background: #ececec;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 3%), 0 1px 6px -1px rgb(0 0 0 / 2%), 0 2px 4px 0 rgb(0 0 0 / 2%);
+  margin: 20px;
+  width: 600px;
+  height: 250px;
+}
+.rightSide div {
+  background-color: #fff;
+  padding : 5px;
+  margin: 2px;
+  border-radius: 5px;
+  width: 95%; 
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 3%), 0 1px 6px -1px rgb(0 0 0 / 2%), 0 2px 4px 0 rgb(0 0 0 / 2%);
+  display: flex;
+  justify-content: space-between;
+}
+
+.calendar th,
+.calendar td {
+  background-color: white;
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+.calendar td {
+  width: 20%;
+}
+.edit {
+  position: absolute;
+  top: 14px;
+  right: 46px;
+  font-size: 30px;
+  background-color: #fff;
+  padding : 5px;
+  /* margin: 5px; */
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 3%), 0 1px 6px -1px rgb(0 0 0 / 2%), 0 2px 4px 0 rgb(0 0 0 / 2%);
+  border-radius: 5px;
+  color: grey;
+  cursor: pointer;
+}
+.edit:hover{
+  color:black;
+}
+

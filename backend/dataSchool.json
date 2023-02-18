@@ -1,0 +1,30 @@
+[{
+  "_id": {
+    "$oid": "63e802d1b1152a2f4bda6ba1"
+  },
+  "Ecole": "Cluse Centre",
+  "Matin1": {
+    "hStart": "08:15",
+    "hEnd": "10:00"
+  },
+  "Matin2": {
+    "hStart": "10:00",
+    "hEnd": "11:45"
+  },
+  "AMidi1": {
+    "hStart": "13:45",
+    "hEnd": "15:00"
+  },
+  "AMidi2": {
+    "hStart": "15:00",
+    "hEnd": "16:15"
+  },  
+  "CP": ["CP1","CP2"], 
+  "CPteacher": ["Jean-Michel", "Jean Michel2"]
+  }
+  
+
+
+
+
+]

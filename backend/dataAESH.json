@@ -1,0 +1,287 @@
+[{
+  "_id": {
+    "$oid": "63e60385981f5b91fa76d9b1"
+  },
+  "Prénom": "Johanne",
+  "Contrat": 18,
+  "Planning": {
+    "lundi": {
+      "Matin1": "Louise",
+      "Matin2": "Ethan P",
+      "Amidi1": "",
+      "Amidi2": ""
+    },
+    "mardi": {
+      "Matin1": "Leandro",
+      "Matin2": "Ethan P",
+      "Amidi1": "Louise",
+      "Amidi2": "Louise"
+    },
+    "jeudi": {
+      "Matin1": "Leandro",
+      "Matin2": "",
+      "Amidi1": "Gauthier",
+      "Amidi2": "Ezel"
+    },
+    "vendredi": {
+      "Matin1": "",
+      "Matin2": "Ezel",
+      "Amidi1": "Ezel",
+      "Amidi2": "Louise"
+    }
+  }
+},{
+  "_id": {
+    "$oid": "63e60385981f5b91fa76d9b2"
+  },
+  "Prénom": "Lydie",
+  "Contrat": 24,
+  "Planning": {
+    "lundi": {
+      "Matin1": "Kenzi",
+      "Matin2": "Kenzi",
+      "Amidi1": "Kenzi",
+      "Amidi2": "Malena"
+    },
+    "mardi": {
+      "Matin1": "Gins",
+      "Matin2": "Jason",
+      "Amidi1": "Gins",
+      "Amidi2": "Malena"
+    },
+    "jeudi": {
+      "Matin1": "Kenzi",
+      "Matin2": "Jason",
+      "Amidi1": "Gins",
+      "Amidi2": "Kenzi"
+    },
+    "vendredi": {
+      "Matin1": "Kenzi",
+      "Matin2": "Jason",
+      "Amidi1": "Jason",
+      "Amidi2": "Malena"
+    }
+  }
+},{
+  "_id": {
+    "$oid": "63e60385981f5b91fa76d9b3"
+  },
+  "Prénom": "Georgia",
+  "Contrat": 24,
+  "Planning": {
+    "lundi": {
+      "Matin1": "Raphaëlle",
+      "Matin2": "Raphaëlle",
+      "Amidi1": "Gins",
+      "Amidi2": "Yann"
+    },
+    "mardi": {
+      "Matin1": "Nathan K",
+      "Matin2": "Nathan K",
+      "Amidi1": "Raphaëlle",
+      "Amidi2": "Raphaëlle"
+    },
+    "jeudi": {
+      "Matin1": "Gins",
+      "Matin2": "Nathan K",
+      "Amidi1": "Malena",
+      "Amidi2": "Raphaëlle"
+    },
+    "vendredi": {
+      "Matin1": "Nathan K",
+      "Matin2": "Nathan K",
+      "Amidi1": "Malena",
+      "Amidi2": "Raphaëlle"
+    }
+  }
+},{
+  "_id": {
+    "$oid": "63e60385981f5b91fa76d9b4"
+  },
+  "Prénom": "Annouk",
+  "Contrat": 24,
+  "Planning": {
+    "lundi": {
+      "Matin1": "Ethan T",
+      "Matin2": "Bruno",
+      "Amidi1": "Ethan T",
+      "Amidi2": "Wesley"
+    },
+    "mardi": {
+      "Matin1": "Bruno",
+      "Matin2": "Ethan T",
+      "Amidi1": "Andrea",
+      "Amidi2": "Yann"
+    },
+    "jeudi": {
+      "Matin1": "Ethan T",
+      "Matin2": "Wesley",
+      "Amidi1": "Léo",
+      "Amidi2": "Ethan T"
+    },
+    "vendredi": {
+      "Matin1": "Ethan T",
+      "Matin2": "Bruno",
+      "Amidi1": "Yann",
+      "Amidi2": "Bruno"
+    }
+  }
+},{
+  "_id": {
+    "$oid": "63e60385981f5b91fa76d9b5"
+  },
+  "Prénom": "Sandrine",
+  "Contrat": 20,
+  "Planning": {
+    "lundi": {
+      "Matin1": "Leandro",
+      "Matin2": "Edan",
+      "Amidi1": "Edan",
+      "Amidi2": ""
+    },
+    "mardi": {
+      "Matin1": "Wesley",
+      "Matin2": "Edan",
+      "Amidi1": "Edan",
+      "Amidi2": ""
+    },
+    "jeudi": {
+      "Matin1": "Edan",
+      "Matin2": "Edan",
+      "Amidi1": "Edan",
+      "Amidi2": ""
+    },
+    "vendredi": {
+      "Matin1": "Leandro",
+      "Matin2": "Wesley",
+      "Amidi1": "Edan",
+      "Amidi2": ""
+    }
+  }
+},{
+  "_id": {
+    "$oid": "63e60385981f5b91fa76d9b6"
+  },
+  "Prénom": "Stephanie",
+  "Contrat": 5,
+  "Planning": {
+    "lundi": {
+      "Matin1": "",
+      "Matin2": "",
+      "Amidi1": "Ezel",
+      "Amidi2": "Ezel"
+    },
+    "mardi": {
+      "Matin1": "",
+      "Matin2": "",
+      "Amidi1": "",
+      "Amidi2": ""
+    },
+    "jeudi": {
+      "Matin1": "",
+      "Matin2": "",
+      "Amidi1": "",
+      "Amidi2": ""
+    },
+    "vendredi": {
+      "Matin1": "Ezel",
+      "Matin2": "Ezel",
+      "Amidi1": "",
+      "Amidi2": ""
+    }
+  }
+},{
+  "_id": {
+    "$oid": "63e60385981f5b91fa76d9b7"
+  },
+  "Prénom": "Sabrina",
+  "Contrat": 24,
+  "Planning": {
+    "lundi": {
+      "Matin1": "Gauthier",
+      "Matin2": "Gauthier",
+      "Amidi1": "Raphaëlle",
+      "Amidi2": "Klara"
+    },
+    "mardi": {
+      "Matin1": "Gauthier",
+      "Matin2": "Raphaëlle",
+      "Amidi1": "Gauthier",
+      "Amidi2": "Gauthier"
+    },
+    "jeudi": {
+      "Matin1": "Gauthier",
+      "Matin2": "Ethan P",
+      "Amidi1": "Raphaëlle",
+      "Amidi2": "Klara"
+    },
+    "vendredi": {
+      "Matin1": "Raphaëlle",
+      "Matin2": "Raphaëlle",
+      "Amidi1": "Gauthier",
+      "Amidi2": "Gauthier"
+    }
+  }
+},{
+  "_id": {
+    "$oid": "63e60385981f5b91fa76d9b8"
+  },
+  "Prénom": "Sarah",
+  "Contrat": 24,
+  "Planning": {
+    "lundi": {
+      "Matin1": "Gins",
+      "Matin2": "Jason",
+      "Amidi1": "Bilel",
+      "Amidi2": "Andrea"
+    },
+    "mardi": {
+      "Matin1": "Jason",
+      "Matin2": "Léo",
+      "Amidi1": "Bilel",
+      "Amidi2": "Léo"
+    },
+    "jeudi": {
+      "Matin1": "Léo",
+      "Matin2": "Andrea",
+      "Amidi1": "Andrea",
+      "Amidi2": "Bilel"
+    },
+    "vendredi": {
+      "Matin1": "Gins",
+      "Matin2": "Léo",
+      "Amidi1": "Léo",
+      "Amidi2": "Jason"
+    }
+  }
+},{
+  "_id": {
+    "$oid": "63e60385981f5b91fa76d9b9"
+  },
+  "Prénom": "Orane",
+  "Contrat": 24,
+  "Planning": {
+    "lundi": {
+      "Matin1": "Wesley",
+      "Matin2": "Gins",
+      "Amidi2": "Raphaëlle"
+    },
+    "mardi": {
+      "Matin1": "Raphaëlle",
+      "Matin2": "Gins",
+      "Amidi1": "Wesley",
+      "Amidi2": "Paul"
+    },
+    "jeudi": {
+      "Matin1": "Raphaëlle",
+      "Matin2": "Raphaëlle",
+      "Amidi1": "Wesley"
+    },
+    "vendredi": {
+      "Matin1": "Paul",
+      "Matin2": "Wesley",
+      "Amidi1": "Gins",
+      "Amidi2": "Wesley"
+    }
+  }
+}]

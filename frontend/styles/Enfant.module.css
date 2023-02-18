@@ -1,0 +1,189 @@
+.table {
+	display: flex;
+	flex-direction: row;
+	box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	max-width: 900px;
+	border-radius: 2px;
+	background-color: #fFFFFF;
+	height: 40px;
+	font-size: 16px;
+	font-weight: 600;
+	margin: 2px 0;
+	padding: 10px;
+  }
+
+  .row1 {
+  width: 18% ;
+  border-right: 1px solid black;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.row2 {
+  width: 13% ;
+  border-right: 1px solid black;
+  padding-left: 5px;
+  padding-right: 10px;
+  text-align: center;
+}
+.row3 {
+  width: 21% ;
+  border-right: 1px solid black;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.row4 {
+  width: 24% ;
+  border-right: 0px;
+  border-right: 1px solid black;
+  padding-right: 10px;
+  text-align: center;
+
+}
+.row5 {
+	width: 21% ;
+	border-right: 0px;
+	border-right: 1px solid black;
+  padding-left: 10px;
+  padding-right: 10px;
+  
+  }
+.row6 {
+	width: 14% ;
+	border-right: 0px;
+  padding-left: 10px;
+  padding-right: 10px;
+  
+  }
+	.prenomNotEditable {
+    border-radius: 10px;
+    padding : 5px;
+  }
+  .prenomEditable {
+    border: 1px solid grey;
+    border-radius: 10px;
+    padding : 5px;
+  }
+  
+  .heureNotEditable {
+    padding-bottom: 1px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 11px;
+  }
+  .heureEditable {
+    border: 1px solid grey;
+    padding-bottom: 1px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 11px;
+  }
+  .rightBtn {
+    font-size :20px;
+    display: flex;
+    justify-content: flex-end;
+    margin-left: auto;
+    color: grey;
+  }
+  
+  .edit {
+    font-size: 20px;
+    margin-left: 3px;
+    cursor: pointer;
+  
+  }
+  .calendar {
+    font-size: 20px;
+    margin-left: 3px;
+    cursor: pointer;
+  
+  }
+  .delete {
+    font-size: 20px;
+    margin-left: 3px;
+    cursor: pointer;
+  }
+  .edit:hover{
+    color:black;
+  }
+  .delete:hover{
+    color:black;
+  }
+  .calendar:hover{
+    color:black;
+  }
+  
+
+
+
+/* .card {
+  display : flex ;
+  flex-direction: column;
+  box-shadow : rgb(0 0 0 / 33%) 2px 2px 6px;
+    align-items: center;
+  width: 300px;
+  border-radius: 8px;
+  background-color: white;
+  margin: 20px;
+  height: 120px;
+}
+.headerCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f0f0f0;
+  width: 100%;
+  padding :10px;
+  color: rgba(0, 0, 0, 0.88);
+  font-weight: 600;
+  font-size: 16px;  
+
+}
+.contentCard {
+    margin-top: 15px;
+    width: 100%;
+    height: 100px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: flex-start;
+    color: rgba(0, 0, 0, 0.88);
+    font-size: 14px;
+}
+
+.rightBtn {
+  font-size :20px;
+}
+.Logo {
+  font-size: 20px;
+}
+.delete {
+  font-size : 20px
+
+}
+
+.segmentContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  flex-direction: column;
+  width: 100px;
+}
+.segmentContent:nth-child(2) {
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+.Prof {
+  margin-left: 10px;
+  font-size: 12px;
+}
+.edit {
+  cursor: pointer;
+}
+.edit:hover {
+  color: black ;
+} */

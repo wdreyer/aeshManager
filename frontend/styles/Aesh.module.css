@@ -1,0 +1,93 @@
+.container {
+	display: flex;
+	flex-wrap:wrap ;	
+	margin-top: 50px;
+	padding : 15 px;
+	justify-content: center;
+}
+
+.table{
+	display: flex;
+	flex-direction: row;
+	box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	max-width: 600px;
+	border-radius: 2px;
+	background-color: #fFFFFF;
+	height: 40px;
+	font-size: 16px;
+	font-weight: 600;
+	margin: 2px 0;
+	padding: 10px;
+
+}
+.row1 {
+  width: 25% ;
+  padding-left: 2%;
+
+}
+.row2 {
+  width: 20% ;
+  text-align: center;
+  padding-right: 2%;
+
+}
+.row3 {
+  width: 27% ;
+  text-align: center;
+  padding-right: 2%;
+
+}
+.row4 {
+  width: 30% ;
+  text-align: center;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 5%;
+
+}
+
+.rightBtn {
+  font-size :20px;
+  display: flex;
+  justify-content: flex-end;
+  margin-left: auto;
+  color: grey;
+}
+
+.edit {
+  font-size: 20px;
+  margin-left: 3px;
+  cursor: pointer;
+
+}
+.calendar {
+  font-size: 20px;
+  margin-left: 3px;
+  cursor: pointer;
+
+}
+.delete {
+  font-size: 20px;
+  margin-left: 3px;
+  cursor: pointer;
+}
+.edit:hover{
+  color:black;
+}
+.delete:hover{
+  color:black;
+}
+.calendar:hover{
+  color:black;
+}
+
+
+
+
+
+
+

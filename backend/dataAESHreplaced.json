@@ -1,0 +1,287 @@
+[{
+  "_id": {
+    "$oid": "63e60385981f5b91fa76d9b1"
+  },
+  "Prénom": "Johanne",
+  "Contrat": 18,
+  "Planning": {
+    "lundi": {
+      "Matin1": "63e2b47d0e3724898d9d1514",
+      "Matin2": "63e2b47d0e3724898d9d1510",
+      "Amidi1": " ",
+      "Amidi2": " "
+    },
+    "mardi": {
+      "Matin1": "63e2b47d0e3724898d9d1520",
+      "Matin2": "63e2b47d0e3724898d9d1510",
+      "Amidi1": "63e2b47d0e3724898d9d1514",
+      "Amidi2": "63e2b47d0e3724898d9d1514"
+    },
+    "jeudi": {
+      "Matin1": "63e2b47d0e3724898d9d1520",
+      "Matin2": " ",
+      "Amidi1": "63e2b47d0e3724898d9d1515",
+      "Amidi2": "63e2b47d0e3724898d9d1517"
+    },
+    "vendredi": {
+      "Matin1": " ",
+      "Matin2": "63e2b47d0e3724898d9d1517",
+      "Amidi1": "63e2b47d0e3724898d9d1517",
+      "Amidi2": "63e2b47d0e3724898d9d1514"
+    }
+  }
+},{
+  "_id": {
+    "$oid": "63e60385981f5b91fa76d9b2"
+  },
+  "Prénom": "Lydie",
+  "Contrat": 24,
+  "Planning": {
+    "lundi": {
+      "Matin1": "63e2b47d0e3724898d9d150e",
+      "Matin2": "63e2b47d0e3724898d9d150e",
+      "Amidi1": "63e2b47d0e3724898d9d150e",
+      "Amidi2": "63e2b47d0e3724898d9d151e"
+    },
+    "mardi": {
+      "Matin1": "63e2b47d0e3724898d9d1521",
+      "Matin2": "63e2b47d0e3724898d9d150d",
+      "Amidi1": "63e2b47d0e3724898d9d1521",
+      "Amidi2": "63e2b47d0e3724898d9d151e"
+    },
+    "jeudi": {
+      "Matin1": "63e2b47d0e3724898d9d150e",
+      "Matin2": "63e2b47d0e3724898d9d150d",
+      "Amidi1": "63e2b47d0e3724898d9d1521",
+      "Amidi2": "63e2b47d0e3724898d9d150e"
+    },
+    "vendredi": {
+      "Matin1": "63e2b47d0e3724898d9d150e",
+      "Matin2": "63e2b47d0e3724898d9d150d",
+      "Amidi1": "63e2b47d0e3724898d9d150d",
+      "Amidi2": "63e2b47d0e3724898d9d151e"
+    }
+  }
+},{
+  "_id": {
+    "$oid": "63e60385981f5b91fa76d9b3"
+  },
+  "Prénom": "Georgia",
+  "Contrat": 24,
+  "Planning": {
+    "lundi": {
+      "Matin1": "63e2b47d0e3724898d9d150b",
+      "Matin2": "63e2b47d0e3724898d9d150b",
+      "Amidi1": "63e2b47d0e3724898d9d1521",
+      "Amidi2": "63e2b47d0e3724898d9d151a"
+    },
+    "mardi": {
+      "Matin1": "63e2b47d0e3724898d9d1511",
+      "Matin2": "63e2b47d0e3724898d9d1511",
+      "Amidi1": "63e2b47d0e3724898d9d150b",
+      "Amidi2": "63e2b47d0e3724898d9d150b"
+    },
+    "jeudi": {
+      "Matin1": "63e2b47d0e3724898d9d1521",
+      "Matin2": "63e2b47d0e3724898d9d1511",
+      "Amidi1": "63e2b47d0e3724898d9d151e",
+      "Amidi2": "63e2b47d0e3724898d9d150b"
+    },
+    "vendredi": {
+      "Matin1": "63e2b47d0e3724898d9d1511",
+      "Matin2": "63e2b47d0e3724898d9d1511",
+      "Amidi1": "63e2b47d0e3724898d9d151e",
+      "Amidi2": "63e2b47d0e3724898d9d150b"
+    }
+  }
+},{
+  "_id": {
+    "$oid": "63e60385981f5b91fa76d9b4"
+  },
+  "Prénom": "Annouk",
+  "Contrat": 24,
+  "Planning": {
+    "lundi": {
+      "Matin1": "63e2b47d0e3724898d9d1519",
+      "Matin2": "63e2b47d0e3724898d9d151c",
+      "Amidi1": "63e2b47d0e3724898d9d1519",
+      "Amidi2": "63e2b47d0e3724898d9d150c"
+    },
+    "mardi": {
+      "Matin1": "63e2b47d0e3724898d9d151c",
+      "Matin2": "63e2b47d0e3724898d9d1519",
+      "Amidi1": "63e2b47d0e3724898d9d1516",
+      "Amidi2": "63e2b47d0e3724898d9d151a"
+    },
+    "jeudi": {
+      "Matin1": "63e2b47d0e3724898d9d1519",
+      "Matin2": "63e2b47d0e3724898d9d150c",
+      "Amidi1": "63e2b47d0e3724898d9d1513",
+      "Amidi2": "63e2b47d0e3724898d9d1519"
+    },
+    "vendredi": {
+      "Matin1": "63e2b47d0e3724898d9d1519",
+      "Matin2": "63e2b47d0e3724898d9d151c",
+      "Amidi1": "63e2b47d0e3724898d9d151a",
+      "Amidi2": "63e2b47d0e3724898d9d151c"
+    }
+  }
+},{
+  "_id": {
+    "$oid": "63e60385981f5b91fa76d9b5"
+  },
+  "Prénom": "Sandrine",
+  "Contrat": 20,
+  "Planning": {
+    "lundi": {
+      "Matin1": "63e2b47d0e3724898d9d1520",
+      "Matin2": "63e2b47d0e3724898d9d150f",
+      "Amidi1": "63e2b47d0e3724898d9d150f",
+      "Amidi2": " "
+    },
+    "mardi": {
+      "Matin1": "63e2b47d0e3724898d9d150c",
+      "Matin2": "63e2b47d0e3724898d9d150f",
+      "Amidi1": "63e2b47d0e3724898d9d150f",
+      "Amidi2": " "
+    },
+    "jeudi": {
+      "Matin1": "63e2b47d0e3724898d9d150f",
+      "Matin2": "63e2b47d0e3724898d9d150f",
+      "Amidi1": "63e2b47d0e3724898d9d150f",
+      "Amidi2": " "
+    },
+    "vendredi": {
+      "Matin1": "63e2b47d0e3724898d9d1520",
+      "Matin2": "63e2b47d0e3724898d9d150c",
+      "Amidi1": "63e2b47d0e3724898d9d150f",
+      "Amidi2": " "
+    }
+  }
+},{
+  "_id": {
+    "$oid": "63e60385981f5b91fa76d9b6"
+  },
+  "Prénom": "Stephanie",
+  "Contrat": 5,
+  "Planning": {
+    "lundi": {
+      "Matin1": " ",
+      "Matin2": " ",
+      "Amidi1": "63e2b47d0e3724898d9d1517",
+      "Amidi2": "63e2b47d0e3724898d9d1517"
+    },
+    "mardi": {
+      "Matin1": " ",
+      "Matin2": " ",
+      "Amidi1": " ",
+      "Amidi2": " "
+    },
+    "jeudi": {
+      "Matin1": " ",
+      "Matin2": " ",
+      "Amidi1": " ",
+      "Amidi2": " "
+    },
+    "vendredi": {
+      "Matin1": "63e2b47d0e3724898d9d1517",
+      "Matin2": "63e2b47d0e3724898d9d1517",
+      "Amidi1": " ",
+      "Amidi2": " "
+    }
+  }
+},{
+  "_id": {
+    "$oid": "63e60385981f5b91fa76d9b7"
+  },
+  "Prénom": "Sabrina",
+  "Contrat": 24,
+  "Planning": {
+    "lundi": {
+      "Matin1": "63e2b47d0e3724898d9d1515",
+      "Matin2": "63e2b47d0e3724898d9d1515",
+      "Amidi1": "63e2b47d0e3724898d9d150b",
+      "Amidi2": "Klara"
+    },
+    "mardi": {
+      "Matin1": "63e2b47d0e3724898d9d1515",
+      "Matin2": "63e2b47d0e3724898d9d150b",
+      "Amidi1": "63e2b47d0e3724898d9d1515",
+      "Amidi2": "63e2b47d0e3724898d9d1515"
+    },
+    "jeudi": {
+      "Matin1": "63e2b47d0e3724898d9d1515",
+      "Matin2": "63e2b47d0e3724898d9d1510",
+      "Amidi1": "63e2b47d0e3724898d9d150b",
+      "Amidi2": "Klara"
+    },
+    "vendredi": {
+      "Matin1": "63e2b47d0e3724898d9d150b",
+      "Matin2": "63e2b47d0e3724898d9d150b",
+      "Amidi1": "63e2b47d0e3724898d9d1515",
+      "Amidi2": "63e2b47d0e3724898d9d1515"
+    }
+  }
+},{
+  "_id": {
+    "$oid": "63e60385981f5b91fa76d9b8"
+  },
+  "Prénom": "Sarah",
+  "Contrat": 24,
+  "Planning": {
+    "lundi": {
+      "Matin1": "63e2b47d0e3724898d9d1521",
+      "Matin2": "63e2b47d0e3724898d9d150d",
+      "Amidi1": "63e2b47d0e3724898d9d1518",
+      "Amidi2": "63e2b47d0e3724898d9d1516"
+    },
+    "mardi": {
+      "Matin1": "63e2b47d0e3724898d9d150d",
+      "Matin2": "63e2b47d0e3724898d9d1513",
+      "Amidi1": "63e2b47d0e3724898d9d1518",
+      "Amidi2": "63e2b47d0e3724898d9d1513"
+    },
+    "jeudi": {
+      "Matin1": "63e2b47d0e3724898d9d1513",
+      "Matin2": "63e2b47d0e3724898d9d1516",
+      "Amidi1": "63e2b47d0e3724898d9d1516",
+      "Amidi2": "63e2b47d0e3724898d9d1518"
+    },
+    "vendredi": {
+      "Matin1": "63e2b47d0e3724898d9d1521",
+      "Matin2": "63e2b47d0e3724898d9d1513",
+      "Amidi1": "63e2b47d0e3724898d9d1513",
+      "Amidi2": "63e2b47d0e3724898d9d150d"
+    }
+  }
+},{
+  "_id": {
+    "$oid": "63e60385981f5b91fa76d9b9"
+  },
+  "Prénom": "Orane",
+  "Contrat": 24,
+  "Planning": {
+    "lundi": {
+      "Matin1": "63e2b47d0e3724898d9d150c",
+      "Matin2": "63e2b47d0e3724898d9d1521",
+      "Amidi2": "63e2b47d0e3724898d9d150b"
+    },
+    "mardi": {
+      "Matin1": "63e2b47d0e3724898d9d150b",
+      "Matin2": "63e2b47d0e3724898d9d1521",
+      "Amidi1": "63e2b47d0e3724898d9d150c",
+      "Amidi2": "63e2b47d0e3724898d9d151b"
+    },
+    "jeudi": {
+      "Matin1": "63e2b47d0e3724898d9d150b",
+      "Matin2": "63e2b47d0e3724898d9d150b",
+      "Amidi1": "63e2b47d0e3724898d9d150c"
+    },
+    "vendredi": {
+      "Matin1": "63e2b47d0e3724898d9d151b",
+      "Matin2": "63e2b47d0e3724898d9d150c",
+      "Amidi1": "63e2b47d0e3724898d9d1521",
+      "Amidi2": "63e2b47d0e3724898d9d150c"
+    }
+  }
+}]

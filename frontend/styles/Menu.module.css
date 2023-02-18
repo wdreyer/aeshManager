@@ -1,0 +1,54 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 100px;
+    height: 60px;
+	box-shadow: 0 2px 8px #f0f1f2;
+	
+  }
+  
+  .logo {
+	font-weight: 600;
+	font-size: 26px;
+	letter-spacing: 2px;
+  }
+  
+  .linkContainer {
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	height: 100%;
+  }
+  
+  .link {
+	text-decoration: none;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	font-size: 18px;
+	padding: 20px;
+	border-right: 1px solid gray;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	color: rgb(94, 93, 93);
+  }
+  
+  .link:first-child {
+	margin-left: 0;
+	border-left: none;
+  }
+  
+  .link:last-child {
+	border-right: none;
+  }
+  
+  .link:hover {
+	color : black;
+	/* background-color: lightblue;
+	box-shadow: 0px 0px 10px 0px lightblue; */
+  }
+  
+  .link:visited {
+	color: rgb(36, 36, 36);
+  }
