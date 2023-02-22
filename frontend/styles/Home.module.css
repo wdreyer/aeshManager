@@ -6,6 +6,17 @@
   align-items: center;
   background-color:   #ececec;;
 }
+.add {
+	margin-right: auto;
+}
+.topBar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 33px;
+    margin-left: 73px;
+}
+
 .table {
 	display: flex;
 	flex-direction: row;
@@ -13,7 +24,7 @@
 	align-items: center;
 	justify-content: space-between;
 	width: 100%;
-	max-width: 900px;
+	width: 900px;
 	border-radius: 2px;
 	background-color: #fFFFFF;
 	height: 40px;

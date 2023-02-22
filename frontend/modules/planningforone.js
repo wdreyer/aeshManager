@@ -14,9 +14,6 @@
         }, {});
         return { Planning: result };
       }
-  
-
-  
   export { getPlanningById}
 
   

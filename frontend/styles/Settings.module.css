@@ -1,0 +1,61 @@
+.container {
+	display: flex;
+    flex-direction: column;
+	padding : 5px;
+    align-items: center;
+    background-color:   #ececec;
+    margin: auto;
+    min-height: 100vh;
+    font-weight: 600;
+}
+.table  {
+    background-color: #fff;
+    padding : 5px;
+    margin: 2px;
+    border-radius: 5px;
+    width: 600px; 
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 3%), 0 1px 6px -1px rgb(0 0 0 / 2%), 0 2px 4px 0 rgb(0 0 0 / 2%);
+    display: flex;
+    justify-content: space-between;
+    padding-left: 2%;
+    padding-right: 2%;
+  }
+  .classes  {
+    background-color: #fff;
+    padding : 5px;
+    margin: 2px;
+    border-radius: 5px;
+    width: 600px; 
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 3%), 0 1px 6px -1px rgb(0 0 0 / 2%), 0 2px 4px 0 rgb(0 0 0 / 2%);
+    display: flex;
+    padding-left: 2%;
+    padding-right: 2%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+  }
+  .classesContainer  {
+    background-color: #fff;
+    padding : 5px;
+    margin: 2px;
+    border-radius: 5px;
+    width: 600px; 
+    display: flex;
+    padding-left: 2%;
+    padding-right: 2%;
+    flex-wrap: wrap;
+  }
+
+  .classesSmall  {
+    background-color: #fff;
+    padding : 5px;
+    margin: 2px;
+    border-radius: 5px;
+    width: 160px; 
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 20%), 0 1px 6px -1px rgb(0 0 0 / 2%), 0 2px 4px 0 rgb(0 0 0 / 2%);
+    display: flex;
+    padding-left: 4%;
+    padding-right: 4%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }

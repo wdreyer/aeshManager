@@ -37,8 +37,7 @@ function Enfant(props) {
   //function heures
 
   let total = 0;
-
-  for (let day in schedule) {
+  for (let day in schedule) {    
     for (let shift in schedule[day]) {
       if (schedule[day][shift].Prénom !== "" ) {
         let rateInMinutes = parseInt(rates[shift].split(":")[0]) * 60 + parseInt(rates[shift].split(":")[1]);

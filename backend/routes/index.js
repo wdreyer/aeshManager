@@ -3,9 +3,9 @@ var router = express.Router();
 const Setting = require("../models/setting");
 
 /* GET home page. */
-router.get('/settings', function(req, res, next) {
+router.get('/settings/:id', function(req, res, next) {
 
-  Setting.find({})
+  Setting.findById({_id : req.params.id})
     .then((data) => {
         res.json({data : data})
     })

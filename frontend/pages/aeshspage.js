@@ -17,7 +17,7 @@ function AeshPage() {
   }, [])
 
   useEffect(() => {
-    fetch('http://localhost:3000/settings')
+    fetch('http://localhost:3000/settings/63e802d1b1152a2f4bda6ba1')
       .then(response => response.json())
       .then(data => {
         setSettingData(data.data);

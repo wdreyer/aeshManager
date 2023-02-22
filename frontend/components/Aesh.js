@@ -16,10 +16,10 @@ let rates = {};
 
 if (props.setting.length > 0) {
   rates = {
-    Matin1: subtractTime(props.setting[0].Matin1.hEnd, props.setting[0].Matin1.hStart),
-    Matin2: subtractTime(props.setting[0].Matin2.hEnd, props.setting[0].Matin2.hStart),
-    Amidi1: subtractTime(props.setting[0].AMidi1.hEnd, props.setting[0].AMidi1.hStart),
-    Amidi2: subtractTime(props.setting[0].AMidi2.hEnd, props.setting[0].AMidi2.hStart),
+    Matin1: subtractTime(props.setting.Matin1.hEnd, props.setting.Matin1.hStart),
+    Matin2: subtractTime(props.setting.Matin2.hEnd, props.setting.Matin2.hStart),
+    Amidi1: subtractTime(props.setting.AMidi1.hEnd, props.setting.AMidi1.hStart),
+    Amidi2: subtractTime(props.setting.AMidi2.hEnd, props.setting.AMidi2.hStart),
   };
 }
 

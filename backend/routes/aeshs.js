@@ -55,15 +55,14 @@ router.put("/:id", async (req, res) => {
 router.put("/editKid/:id", async (req, res) => {
   const { day, shift, value } = req.body.Planning;
   const addTo = req.body.Planning.addTo;
+  console.log("in the router",req.body)
   try {
     // Find the Aesh document to update
     const aesh = await Aesh.findById(addTo);
     if (!aesh) {
       return res.status(404).json({ message: "Aesh not found" });
     }
-    // Update the Planning field in the Aesh document and create the path if it doesn't exist
     aesh.set(`Planning.${day}.${shift}`, value);
-
     const updatedAesh = await aesh.save();
     res.status(200).json(updatedAesh);
   } catch (err) {
