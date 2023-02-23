@@ -5,11 +5,13 @@ import { AiOutlineEdit, AiOutlineSave } from "react-icons/ai";
 import { Select, Input,Button, Modal, Space } from 'antd';
 import {getPlanningById} from "../modules/planningforone"
 import {  useSelector } from 'react-redux';
+import { calculhour } from '../modules/calculHour';
       
 function Planning(props) {
   const [planning, setPlanning] = useState([]);
   const [heurresReals, setHeurresReals] = useState(0);
   const [diff, setDiff] = useState(0);
+  const [totalTime,setTotalTime] = useState(0)
   const [enfantData, setEnfantData] = useState([]);
   const [aeshData, setAeshData] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
@@ -17,10 +19,23 @@ function Planning(props) {
   const [list,setList] = useState();
   const [prenom, setPrenom] = useState('');
   const [heuresAcc,setHeuresAcc] = useState('');
-  const settings = useSelector((state) => state.users.settings);
-  const classes = settings.Classes;  
+  const [heures, setHeures] = useState('');
+
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedValue, setSelectedValue] = useState("");
+  const settings = useSelector((state) => state.users.settings);
+  let intRates = {};
+  intRates.Matin1 = subtractTime(settings.Matin1.hEnd, settings.Matin1.hStart);
+  intRates.Matin2 = subtractTime(settings.Matin2.hEnd, settings.Matin2.hStart);
+  intRates.Amidi1 = subtractTime(settings.AMidi1.hEnd, settings.AMidi1.hStart);
+  intRates.Amidi2 = subtractTime(settings.AMidi2.hEnd, settings.AMidi2.hStart);
+  const rates = intRates;   
+  const classes = settings.Classes;  
+
+
+  const [oldPrenom, setOldPrenom] = useState(props.prenom);
+
+
 
   const warning = () => {
     Modal.warning({
@@ -47,10 +62,8 @@ const categoryOptions = classes.map((category) => {
 });
 
 const selectedCategoryValues =
-  selectedCategory !== ""
-    ? classes.find((category) => Object.keys(category)[0] === selectedCategory)[
-        selectedCategory
-      ]
+  selectedCategory !== "" && classes.some(category => category.hasOwnProperty(selectedCategory))
+    ? classes.find((category) => Object.keys(category)[0] === selectedCategory)[selectedCategory]
     : [];
 
 const valueOptions =
@@ -104,6 +117,12 @@ const valueOptions =
 
 //affichage planning si child
 if (props.child) {
+  useEffect(()=>{
+    setHeures(props.child.Heures);
+    setSelectedCategory(props.child.Classe);
+    setSelectedValue(props.child.Prof);
+  },[])
+ 
     useEffect(() => {
       fetch('http://localhost:3000/aeshs')
         .then(response => response.json())
@@ -185,7 +204,7 @@ const handleEdit = () => {    // rendre éditable :
   // sauvegarder l'édition 
 const updateCalendar = async () => {
   if(props.newChild){
-    if(isNaN(heuresAcc) || prenom.length <3 || selectedValue === undefined  ){
+    if( prenom.length <3 || selectedValue === undefined  ){
     warning();
     return
     }
@@ -214,6 +233,28 @@ const updateCalendar = async () => {
     setIsEditing(false);
   }
   if (props.child  ) {
+    console.log("try to update", selectedCategory)
+    try {
+      const response = await fetch("http://localhost:3000/enfants/update", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          enfantID: props.id,
+          prenom: oldPrenom,          
+          heures: heures,
+          classe: selectedCategory ,
+          prof: selectedValue,
+        }),
+      });
+      const data = await response.json();
+   
+    } catch (error) {
+      console.error(error);
+    }
+
+
     try {
 
       for (const cell of editedCells) {
@@ -230,12 +271,28 @@ const updateCalendar = async () => {
             });
           
         } 
+           const total = await calculhour(props.id, rates);
+        setTotalTime(total);
+
+      await fetch("http://localhost:3000/enfants/updateHeures", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          enfantID:  props.id,
+          HeuresReels: total,
+        }),
+      });
+      props.onSave();
+      setEditedCells([]);
+      setIsEditing(false);
       }
       catch (err) {
         console.log('Error updating calendar:', err);
-      }
-      setEditedCells([]);
-      setIsEditing(false);
+      }    
+     
+      
   }
   if(props.newChild){
     try {
@@ -275,7 +332,21 @@ const updateCalendar = async () => {
             console.log('Error updating calendar:', err);
           }
         }
-        setEditedCells([]);
+        const total = await calculhour(idNewKid, rates);
+        setTotalTime(total);
+
+      await fetch("http://localhost:3000/enfants/updateHeures", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          enfantID: idNewKid,
+          HeuresReels: total,
+        }),
+      });
+      setPrenom('');
+      props.onSave();
       } else {
         console.log('Erreur HTTP :', response.status);
         // gérer l'erreur...
@@ -284,109 +355,199 @@ const updateCalendar = async () => {
       console.log('Erreur de la requête :', error.message);
       // gérer l'erreur...
     }
-    setEditedCells([]);
-    props.onSave();
+   
+
+  
   }
 
 
   };
 
 return (
-  <div className={styles.modal}>
-  <table className={styles.calendar}>
-  <thead>
-    <tr>
-      <th></th>
-      <th>Lundi</th>
-      <th>Mardi</th>
-      <th>Jeudi</th>
-      <th>Vendredi</th>
-    </tr>
-  </thead>
-  <tbody>
-    {['Matin1', 'Matin2', 'Amidi1', 'Amidi2'].map((rowKey, rowIndex) => (
-      <tr key={rowIndex}>
-        <td>{rowKey === 'Amidi1' ? 'Après-midi 1' : rowKey === 'Amidi2' ? 'Après-midi 2' : rowKey.replace('Matin', 'Matin ')}</td>
-        {['lundi', 'mardi', 'jeudi', 'vendredi'].map((dayKey, colIndex) => (
-          <td key={colIndex}>
-            {isEditing ? ( 
-              <Select
-                 showSearch
-                 placeholder="Ajouter"
-                 allowClear
-                 filterOption={(input, option) =>
-                  (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                }              
-                defaultValue= { planning[dayKey] && planning[dayKey][rowKey] && planning[dayKey][rowKey].Prénom ? planning[dayKey][rowKey].Prénom : "Ajouter"  }
-                options={list}
-                styles={{
-                  container: (provided) => ({
-                    ...provided,
-                    width: "200px",
-                  }),
-                }}
-                onChange={(selectedOption) => handleSelectChange(selectedOption, dayKey, rowKey)}              />
-            ) : (
-              planning[dayKey] && planning[dayKey][rowKey] && planning[dayKey][rowKey].Prénom // sinon, afficher la valeur actuelle de la case
-            )}
-          </td>
+  <div className={props.classes ? styles.classemodal :styles.modal} >
+    <table className={styles.calendar}>
+      <thead>
+        <tr>
+          <th></th>
+          <th>Lundi</th>
+          <th>Mardi</th>
+          <th>Jeudi</th>
+          <th>Vendredi</th>
+        </tr>
+      </thead>
+      <tbody>
+        {["Matin1", "Matin2", "Amidi1", "Amidi2"].map((rowKey, rowIndex) => (
+          <tr key={rowIndex}>
+            <td>{rowKey === "Amidi1" ? "Après-midi 1" : rowKey === "Amidi2" ? "Après-midi 2" : rowKey.replace("Matin", "Matin ")}</td>
+            {["lundi", "mardi", "jeudi", "vendredi"].map((dayKey, colIndex) => (
+              <td key={colIndex}>
+                {isEditing ? (
+                  <Select
+                    showSearch
+                    placeholder="Ajouter"
+                    allowClear
+                    filterOption={(input, option) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase())}
+                    defaultValue={planning[dayKey] && planning[dayKey][rowKey] && planning[dayKey][rowKey].Prénom ? planning[dayKey][rowKey].Prénom : "Ajouter"}
+                    options={list}
+                    styles={{
+                      container: (provided) => ({
+                        ...provided,
+                        width: "200px",
+                      }),
+                    }}
+                    onChange={(selectedOption) => handleSelectChange(selectedOption, dayKey, rowKey)}
+                  />
+                ) : (
+                  planning[dayKey] && planning[dayKey][rowKey] && planning[dayKey][rowKey].Prénom // sinon, afficher la valeur actuelle de la case
+                )}
+              </td>
+            ))}
+          </tr>
         ))}
-      </tr>
-    ))}
-  </tbody>
-</table>
-  <div className={styles.rightSide}>
-  {props.child && (
-<>
-      <div><span key="prenom">Prénom :</span><span key="prenom-valeur">{props.prenom}</span></div>
-      <div><span key="classe">Classe :</span><span key="classe-valeur">{props.child.classe}</span></div>
-      <div><span key="prof">Prof :</span><span key="prof-valeur"></span>{props.child.Prof}</div>
-      <div><span key="heures-accordees">Heures accordées :</span><span key="heures-accordees-valeur">{props.child.Heures}</span></div>
-      <div><span key="heures-reelles">Heures réelles :</span><span key="heures-reelles-valeur">{props.heurresReals}</span></div>
-      <div><span key="difference">Différence :</span><span key="difference-valeur">{props.diff}</span></div>
-      </>
-  )}
-  {props.newChild && (
-    <>
-          <div><span key="prenom">Prénom </span><Input placeholder="Prénom" onChange={(e) => setPrenom(e.target.value)} value={prenom} /></div>
-          <div><span key="classe">Classe :</span><span key="classe-valeur"> <Select
-          defaultValue={selectedCategory}
-          style={{ width: 100 }}
-          onChange={handleCategoryChange}
-          options={categoryOptions}
-          placeholder="Select a category"
-        /></span></div>
-          <div><span key="prof">Prof :</span><span key="prof-valeur"> <Select
-          value={selectedValue}
-          style={{ width: 100 }}
-          onChange={handleValueChange}
-          options={valueOptions}
-          placeholder="Select a value"
-          disabled={selectedCategory === ""}
-        /></span></div>
-          <div><span key="heures-accordees">Heures accordées :</span><Input placeholder="Heures Acc." onChange={(e) => setHeuresAcc(e.target.value)} value={heuresAcc} /></div>
-          <div><span key="heures-reelles">Heures réelles :</span><span key="heures-reelles-valeur">{heurresReals}</span></div>
-          <div><span key="difference">Différence :</span><span key="difference-valeur">{diff}</span></div>
+      </tbody>
+    </table>
+    <div className={props.classes ? styles.rightSideCLasse : styles.rightSide}>
+      {props.child && (
+        <>
+          <div>
+            <span key="prenom">Prénom :</span>
+            <span
+            contentEditable={isEditing}
+            className={
+              isEditing ? styles.prenomEditable : styles.prenomNotEditable
+            }
+            onBlur={(event) => setOldPrenom(event.target.innerText)}
+          >
+           {oldPrenom}
+          </span>
+          </div>         
+
+          {isEditing ? (
+            <>
+            <div>
+          <span key="classe">Classe :</span>
+           <span key="classe-valeur">
+              <Select
+                defaultValue={{
+                  value: selectedCategory,
+                  label: selectedCategory,
+                }}
+                style={{ width: 100 }}
+                onChange={handleCategoryChange}
+                options={categoryOptions}
+                placeholder="Select a category"
+              />
+            </span>
+            </div>
+            <div>
+            <span key="prof">Prof :</span>
+            <span>
+              <Select
+                defaultValue={{
+                  value: selectedValue,
+                  label: selectedValue,
+                }}
+                style={{ width: 120 }}
+                value={selectedValue}
+                onChange={handleValueChange}
+                options={valueOptions}
+                placeholder="Select a value"
+              />
+              </span>
+              </div>
+            </>
+          ) : (
+            <>
+            <div>
+            <span key="classe">Classe :</span>
+            <span key="classe-valeur">{selectedCategory}</span>
+          </div>
+          <div>
+            <span key="prof">Prof :</span>
+            <span key="prof-valeur"></span>
+            {selectedValue}
+          </div>
           </>
+          )}
+          <div>
+            <span key="heures-accordees">Heures accordées :</span>
+            <span key="heures-accordees-valeur"><span
+            contentEditable={isEditing}
+            className={
+              isEditing ? styles.heureEditable : styles.heureNotEditable
+            }
+            onBlur={(event) => setHeures(event.target.innerText)}
+          >
+            {heures}
+          </span></span>
+          </div>
+          <div>
+            <span key="heures-reelles">Heures réelles :</span>
+            {props.heuresReels}
+          </div>
+          <div>
+            <span key="difference">Différence :</span>
+            <span key="difference-valeur">{subtractTime(heures,props.heuresReels)}</span>
+          </div>
+        </>
       )}
-  {props.Aesh && (
-    <>
-          <div><span key="prenom">Prénom :</span><span key="prenom-valeur">{props.Aesh.Prénom}</span></div>
-          <div><span key="contrat">Contrat :</span><span key="contrat-valeur">{props.Aesh.Contrat}</span></div>
-          <div><span key="hReals">Heures Réelles :</span><span key="hReals-valeur">{props.hReals}</span></div>
-          <div><span key="diff">Différence :</span><span key="diff-valeur">{props.diff}</span></div>
-          </>
-)}
-      </div>
-
-
-
-
-
-  {!isEditing && !props.newChild && (<AiOutlineEdit onClick={()=>handleEdit()} className={styles.edit} />)}
-  {isEditing && (
-    <AiOutlineSave onClick={() =>updateCalendar()} className={styles.edit} />
-  )}
+      {props.newChild && (
+        <>
+          <div>
+            <span key="prenom">Prénom </span>
+            <Input placeholder="Prénom" onChange={(e) => setPrenom(e.target.value)} value={prenom} />
+          </div>
+          <div>
+            <span key="classe">Classe :</span>
+            <span key="classe-valeur">
+              {" "}
+              <Select defaultValue={selectedCategory} style={{ width: 100 }} onChange={handleCategoryChange} options={categoryOptions} placeholder="Select a category" />
+            </span>
+          </div>
+          <div>
+            <span key="prof">Prof :</span>
+            <span key="prof-valeur">
+              {" "}
+              <Select value={selectedValue} style={{ width: 100 }} onChange={handleValueChange} options={valueOptions} placeholder="Select a value" disabled={selectedCategory === ""} />
+            </span>
+          </div>
+          <div>
+            <span key="heures-accordees">Heures accordées :</span>
+            <Input placeholder="Heures Acc." onChange={(e) => setHeuresAcc(e.target.value)} value={heuresAcc} />
+          </div>
+          <div>
+            <span key="heures-reelles">Heures réelles :</span>
+            <span key="heures-reelles-valeur">{heurresReals}</span>
+          </div>
+          <div>
+            <span key="difference">Différence :</span>
+            <span key="difference-valeur">{diff}</span>
+          </div>
+        </>
+      )}
+      {props.Aesh && (
+        <>
+          <div>
+            <span key="prenom">Prénom :</span>
+            <span key="prenom-valeur">{props.Aesh.Prénom}</span>
+          </div>
+          <div>
+            <span key="contrat">Contrat :</span>
+            <span key="contrat-valeur">{props.Aesh.Contrat}</span>
+          </div>
+          <div>
+            <span key="hReals">Heures Réelles :</span>
+            <span key="hReals-valeur">{props.hReals}</span>
+          </div>
+          <div>
+            <span key="diff">Différence :</span>
+            <span key="diff-valeur">{props.diff}</span>
+          </div>
+        </>
+      )}
+    </div>
+    {!isEditing && !props.newChild && <AiOutlineEdit onClick={() => handleEdit()} className={props.classes ? styles.editCLasse : styles.edit} />}
+    {isEditing && <AiOutlineSave onClick={() => updateCalendar()} className={props.classes ? styles.editCLasse : styles.edit} />}
   </div>
 );
 }

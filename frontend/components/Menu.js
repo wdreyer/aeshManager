@@ -8,10 +8,7 @@ import {setSettings } from '../reducers/users'
 
 
 function Menu() {
-
-  const dispatch = useDispatch();
-
-  
+  const dispatch = useDispatch();  
   useEffect(() => {
     fetch('http://localhost:3000/settings/63e802d1b1152a2f4bda6ba1')
       .then(response => response.json())

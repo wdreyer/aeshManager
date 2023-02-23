@@ -1,0 +1,35 @@
+.container {
+	display: flex;
+    flex-direction: column;
+    justify-content: center;
+	padding : 15 px;
+    align-items: center;
+    background-color:   #ececec;;
+    min-height: 100vh;
+}
+.checkBox{
+    display: flex;
+    justify-content: space-between;
+	flex-direction: row;
+	box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+	align-items: center;
+	width: 100%;
+	width: 900px;
+	border-radius: 2px;
+	background-color: #fFFFFF;
+	height: 40px;
+	font-size: 16px;
+	font-weight: 600;
+	margin: 20px 0;
+	padding: 10px;
+}
+.planningcontainer {
+    display: flex;
+    flex-direction: row;
+    padding: 5px;
+    justify-content: center;
+    background-color: #ececec;
+    min-height: 100vh;
+    flex-wrap: wrap;
+    width: 100%;
+}

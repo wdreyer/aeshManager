@@ -1,26 +1,105 @@
  import styles from "../styles/Enfant.module.css";
- import { Button, Modal } from "antd";
+ import { Select, Input,Button, Modal, Space } from 'antd';
  import Planning from "../components/Planning";
- import {getPlanningByAESH} from "../modules/planningfunction"
  import {subtractTime,multiplyTime} from '../modules/time'
-
-
+ import { ExclamationCircleOutlined } from '@ant-design/icons';
+ import {  useSelector } from 'react-redux';
  import { AiOutlineSave,AiOutlineUser, AiOutlineEdit, AiOutlineDelete, AiOutlineCalendar } from "react-icons/ai";
-
-import { useState } from "react";
+import { useState,useEffect } from "react";
 
 function Enfant(props) {
-
-
    const schedule = props.Planning;
    const rates = props.rates;
-
-
+   const { confirm } = Modal;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditable, setEditable] = useState(false);
   const [prenom, setPrenom] = useState(props.Prénom);
   const [heures, setHeures] = useState(props.Heures);
+  const [heuresReels, setheuresReels] = useState(props.HeuresReels)
   const [dataAesh, setDataAesh] = useState([]);
+  const settings = useSelector((state) => state.users.settings);
+  const classes = settings.Classes;  
+
+
+function getClass(classe) {
+  switch (classe) {
+    case "CP":
+      return styles.cp;
+    case "CE1":
+      return styles.ce1;
+    case "CE2":
+      return styles.ce2;
+    case "CM1":
+      return styles.cm1;
+    case "CM2":
+      return styles.cm2;
+    case "Ulyss":
+      return styles.ulyss;
+    default:
+      return "";
+  }
+}
+  
+    useEffect(() => {
+    setheuresReels(props.HeuresReels);
+  }, [props.HeuresReels]);
+
+  const [selectedCategory, setSelectedCategory] = useState(props.Classe);
+  const [selectedValue, setSelectedValue] = useState(props.Prof);
+
+
+  
+
+
+  const handleCategoryChange = (value) => {
+    setSelectedCategory(value);
+    setSelectedValue("");
+  };
+  
+  const handleValueChange = (value) => {
+    setSelectedValue(value);
+  };
+
+
+  const categoryOptions = classes.map((category) => {
+    const categoryName = Object.keys(category)[0];
+    return {
+      value: categoryName,
+      label: categoryName,
+    };
+  });
+
+  const selectedCategoryValues =
+    selectedCategory !== ""
+      ? classes.find((category) => Object.keys(category)[0] === selectedCategory)?.[selectedCategory] || []
+      : [];
+
+  const valueOptions =
+    selectedCategoryValues.length > 0
+      ? selectedCategoryValues.map((value) => {
+          return {
+            value: value,
+            label: value,
+          };
+        })
+      : [];
+      
+
+  const showDeleteConfirm = () => {
+    confirm({
+      title: 'Voulez vous vraiment supprimer cet enfant ?',
+      icon: <ExclamationCircleOutlined />,
+      okText: 'Oui',
+      okType: 'danger',
+      cancelText: 'Non',
+      onOk() {
+        deleteEnfant()        
+      },
+      onCancel() {
+        return    
+      },
+    });
+  };
 
   //fonction pour afficher la modale :
   const showModal = () => {
@@ -34,31 +113,6 @@ function Enfant(props) {
   };
   // fin de la fonction
 
-  //function heures
-
-  let total = 0;
-  for (let day in schedule) {    
-    for (let shift in schedule[day]) {
-      if (schedule[day][shift].Prénom !== "" ) {
-        let rateInMinutes = parseInt(rates[shift].split(":")[0]) * 60 + parseInt(rates[shift].split(":")[1]);
-        total += rateInMinutes;
-       
-      }
-    }
-  }  
-  let hours = Math.floor(total / 60);
-  let minutes = total % 60;
-
-  const heuresReals = hours.toString().padStart(2, '0') + ":" + minutes.toString().padStart(2, '0')
-  
-  
-  const diff = subtractTime(heures + ":00",heuresReals)
-
-  //end function heures
-
-
-
-
   //fonction pour update un enfant :
   const updateEnfant = async () => { 
     try {
@@ -71,22 +125,42 @@ function Enfant(props) {
           enfantID: props._id,
           prenom: prenom,
           heures: heures,
-          classe: props.Classe,
-          prof: props.Prof,
+          classe: selectedCategory ,
+          prof: selectedValue,
         }),
       });
       const data = await response.json();
       console.log(data);
+      props.onSave();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  // fin de la fonction 
+
+  //fonction pour supprimer un enfant :
+
+  const deleteEnfant = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/enfants/deleteone/${props._id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json"
+        },
+      });
+      const data = await response.json();
+      console.log(data)
+          props.onSave();
+     
+   
     } catch (error) {
       console.error(error);
     }
   };
 
-  // fin de la fonction 
-
   return (
     <>
-      <div id={props._id} className={styles.table}>
+      <div id={props._id} className={`${styles.table} ${getClass(props.Classe)}`}>
       <div className={styles.row1} >   
       <AiOutlineUser />
           <span
@@ -98,9 +172,44 @@ function Enfant(props) {
           >
            {prenom}
           </span>
-          </div>
-          <span className={styles.row2}>CP</span>
-          <span className={styles.row3}>{props.Prof}</span>      
+          </div>  
+
+
+          {isEditable ? (
+            <>
+           <span className={styles.row2}>
+              <Select
+                defaultValue={{
+                  value: selectedCategory,
+                  label: selectedCategory,
+                }}
+                style={{ width: 80 }}
+                onChange={handleCategoryChange}
+                options={categoryOptions}
+                placeholder="Select a category"
+              />
+            </span>
+            <span className={styles.row3}>
+              <Select
+                defaultValue={{
+                  value: selectedValue,
+                  label: selectedValue,
+                }}
+                style={{ width: 120 }}
+                value={selectedValue}
+                onChange={handleValueChange}
+                options={valueOptions}
+                placeholder="Select a value"
+              />
+              </span>
+            </>
+          ) : (
+            <>
+              <span className={styles.row2}>{props.Classe}</span>
+              <span className={styles.row3}>{props.Prof}</span>
+            </>
+          )}
+
           <div className={styles.row4}>
           <span
               contentEditable={isEditable}
@@ -112,8 +221,8 @@ function Enfant(props) {
               {heures}
             </span>
           </div>
-          <span className={styles.row5}>{heuresReals}</span>
-          <span className={styles.row6}>{diff}</span>
+          <span className={styles.row5}>{heuresReels}</span>
+          <span className={styles.row6}>{subtractTime(heuresReels,heures)}</span>
           
           <div className={styles.rightBtn}>
           <AiOutlineCalendar onClick={showModal} className={styles.calendar} />
@@ -125,7 +234,7 @@ function Enfant(props) {
             {isEditable && <AiOutlineSave className={styles.delete} />}
           </span>
             <span className={styles.delete}>
-              <AiOutlineDelete />
+              <AiOutlineDelete onClick={()=> {showDeleteConfirm()}} />
             </span>
           </div>
           <Modal
@@ -136,7 +245,7 @@ function Enfant(props) {
           open={isModalOpen}
           width={900}
         > 
-        <Planning id={props._id} heurresReals={heuresReals} diff={diff} prenom ={prenom} child={props} planningChild={props.planningChild}/>      
+        <Planning id={props._id} heuresReels={heuresReels} diff={subtractTime(heuresReels,heures)} prenom={prenom} child={props} onSave={props.onSave} planningChild={props.planningChild}/>      
         </Modal>       
       </div>
     </>

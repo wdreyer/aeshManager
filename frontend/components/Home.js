@@ -20,6 +20,7 @@ const showModal = () => {
   setIsModalOpen(true);
 };
 const handleOk = () => {
+  fetchEnfants()
   setIsModalOpen(false);
 };
 const handleCancel = () => {
@@ -34,25 +35,33 @@ useEffect(() => {
     });
 }, []);
 
-useEffect(() => {
-if (settingData.AMidi1) {
+const fetchEnfants = async () => {
+  console.log("are you refetching ?")
+  try {
+    const response = await fetch("http://localhost:3000/enfants");
+    const data = await response.json();
+    // setEnfantData(data.data.filter((e) => e._id !== "63ee549d4b6de7f8cedfcb46"));
+   
+    const sortedEnfantData = data.data.filter((e) => e._id !== "63ee549d4b6de7f8cedfcb46").sort((a, b) => {
+      const classes = ["CP", "CE1", "CE2", "CM1", "CM2", "Ulyss"];
+      const aClassIndex = classes.indexOf(a.Classe);
+      const bClassIndex = classes.indexOf(b.Classe);
+      return aClassIndex - bClassIndex;
+    });
+    
+    setEnfantData(sortedEnfantData);
 
-  let intRates = {}
-  intRates.Matin1 = subtractTime(settingData.Matin1.hEnd, settingData.Matin1.hStart);
-  intRates.Matin2 = subtractTime(settingData.Matin2.hEnd, settingData.Matin2.hStart);
-  intRates.Amidi1 = subtractTime(settingData.AMidi1.hEnd, settingData.AMidi1.hStart);
-  intRates.Amidi2 = subtractTime(settingData.AMidi2.hEnd, settingData.AMidi2.hStart);
-  setRates(intRates)
-}
-
-}, [settingData]);
+    
+   
+   
+    console.log("fetching",data)
+  } catch (error) {
+    console.error(error);
+  }
+};
   
   useEffect(() => {
-    fetch("http://localhost:3000/enfants")
-      .then((response) => response.json())
-      .then((data) => {
-        setEnfantData(data.data.filter((e) => e._id !== "63ee549d4b6de7f8cedfcb46"));
-      });
+    fetchEnfants()
   }, []);
 
   useEffect(() => {
@@ -63,17 +72,9 @@ if (settingData.AMidi1) {
       });
   }, []);
 
-  useEffect(() => {
-    enfantData.forEach((data) => {
-      const childPlanning = getPlanningByAESH(dataAesh, data._id);
-
-      setPlanning((planning) => ({ ...planning, [data._id]: childPlanning }));
-    });
-  }, [dataAesh, enfantData]);
-
   const enfants = enfantData.map((data, i) => {
     const childPlanning = planning[data._id];
-    return <Enfant key={i} rates={rates} planningChild={childPlanning} {...data} {...childPlanning} />;
+    return <Enfant key={i} rates={rates} planningChild={childPlanning} onSave={fetchEnfants}  {...data} {...childPlanning} />;
   });
 
 
@@ -87,7 +88,7 @@ if (settingData.AMidi1) {
     open={isModalOpen}
     width={900}
   > 
-  <Planning newChild="ok" onSave={handleOk} />      
+  <Planning newChild="ok"  onSave={handleOk} />      
   </Modal>  
     <div className={styles.topBar}>
     <div className={styles.table}>
@@ -104,7 +105,7 @@ if (settingData.AMidi1) {
     <Button shape="circle" size="large" icon={<UsergroupAddOutlined onClick={showModal} />} />
     </Tooltip></div>
     </div> 
-    {enfants}    
+    {enfants }    
     </div>
   );
 }

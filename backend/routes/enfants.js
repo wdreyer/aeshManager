@@ -23,10 +23,25 @@ router.put('/update', function (req,res,next){
      {  Prénom :req.body.prenom,
         Heures : req.body.heures,
         Classe : req.body.classe, 
-        Prof : req.body.prof })
+        Prof : req.body.prof
+       })
+    .then((data) => {res.json({data})})
+    })
+
+    
+router.put('/updateHeures', function (req,res,next){
+  console.log("routing",req.body)
+    Enfant.updateOne({
+         _id : req.body.enfantID},
+     {  HeuresReels :req.body.HeuresReels,
+       })
     .then((data) => {res.json({data})})
 
     })
+
+
+
+
 
     router.post('/post', async function (req, res, next) {
         try {
@@ -46,4 +61,14 @@ router.put('/update', function (req,res,next){
         }
       });
 
-module.exports = router;
+      router.delete("/deleteone/:id", async function (req, res, next) {
+        try {
+          const result = await Enfant.deleteOne({ _id: req.params.id });
+          res.status(201).json({ deletedKid: result });
+        } catch (err) {
+          console.error(err);
+          res.status(500).json({ message: "Server error" });
+        }
+      });
+
+      module.exports = router;
