@@ -20,6 +20,9 @@ function Planning(props) {
   const [prenom, setPrenom] = useState('');
   const [heuresAcc,setHeuresAcc] = useState('');
   const [heures, setHeures] = useState('');
+  const [oldPrenom, setOldPrenom] = useState('');
+  const [contrat,setContrat] = useState('');
+  const [aeshPrenom,setPrenomAesh] = useState('')
 
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedValue, setSelectedValue] = useState("");
@@ -33,14 +36,25 @@ function Planning(props) {
   const classes = settings.Classes;  
 
 
-  const [oldPrenom, setOldPrenom] = useState(props.prenom);
+  if (props.child) {
+    useEffect(() => {
+      setOldPrenom(props.prenom);
+    }, []);
+  }
+  if (props.Aesh) {
+    console.log()
+    useEffect(() => {
+      setPrenomAesh(props.Aesh.Prénom);
+      setContrat(props.Aesh.Contrat);
+    }, []);
+  }
 
 
 
   const warning = () => {
     Modal.warning({
       title: 'Attention',
-      content: 'Vous navez pas ou mal rempli tous les champs',
+      content: `Vous n'avez pas ou mal rempli tous les champs`,
     });
   };
 
@@ -76,9 +90,8 @@ const valueOptions =
       })
     : [];
 
-
-
-  if (props.newChild){
+    
+  if (props.newChild || props.newAesh){
     useEffect(() => {
     setIsEditing(true)
   }, []);
@@ -86,7 +99,7 @@ const valueOptions =
 
 
   // on crée les listes selectionnables
-  if (props.Aesh) {
+  if (props.Aesh || props.newAesh) {
     useEffect(() => {
       fetch("http://localhost:3000/enfants")
         .then((response) => response.json())
@@ -147,7 +160,7 @@ if (props.child) {
 
   // début modification du planning :
   const handleSelectChange = (selectedOption, rowKey, cellId) => {
-   if(props.Aesh){
+   if(props.Aesh ){
     let newCell = { day: rowKey , shift: cellId , value: selectedOption  }; //,
     if(selectedOption === "Ajouter"){
       return
@@ -188,13 +201,25 @@ else if ( props.newChild){
      newCell = { day: rowKey , shift: cellId , value: "", addTo : ""  }; 
     }
   }
+}
+  else if (props.newAesh){   
+    let newCell = { day: rowKey , shift: cellId , value: selectedOption  }; //,
+    if(selectedOption === undefined){
+      newCell = { day: rowKey , shift: cellId , value: "63ee549d4b6de7f8cedfcb46" }; 
+      if(editedCells.some(cell => cell.day === rowKey && cell.shift === cellId)) {
+        setEditedCells(prev => prev.filter(cell => !(cell.day === rowKey && cell.shift === cellId)));
+      }
+      else {
+       newCell = { day: rowKey , shift: cellId , value: "63ee549d4b6de7f8cedfcb46" }; 
+      }
+    }
+    setEditedCells((prev) => [...prev, newCell]);
+    console.log(editedCells)
+  }
 
-
-  setEditedCells((prev) => [...prev, newCell]);
-  console.log(editedCells)
 
 }   
-};
+
 
 const handleEdit = () => {    // rendre éditable :  
     setIsEditing(true);   
@@ -203,32 +228,63 @@ const handleEdit = () => {    // rendre éditable :
   // sauvegarder l'édition 
   // sauvegarder l'édition 
 const updateCalendar = async () => {
-  if(props.newChild){
+  if(props.newChild || props.newAesh){
     if( prenom.length <3 || selectedValue === undefined  ){
     warning();
     return
     }
   }
-
+ if(props.newAesh){
+  console.log("readytoedit",editedCells)
+  try {
+    const response = await fetch(`http://localhost:3000/aeshs/post`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        prenom: prenom,
+        contrat : heuresAcc,
+        Planning: editedCells,
+      
+      })
+    });
+      setPrenom('');
+      setHeuresAcc('')
+      props.onSave();
+  }
     
-    if(props.Aesh){     
-    try {
-      console.log("readytoedit",editedCells)
-      const updatedAesh = await fetch(`http://localhost:3000/aeshs/${props.Aesh._id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          Planning: editedCells
+catch (err) {
+  console.log('Error updating calendar:', err);
+}
+
+
+
+ }    
+    if(props.Aesh ){     
+      try {
+        const updatedAesh = await fetch(`http://localhost:3000/aeshs/${props.Aesh._id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            prenom: aeshPrenom,
+            contrat : contrat,
+            Planning: editedCells
+          })
         })
-      }).then((res) => res.json());
+        const data = await updatedAesh.json();
+        console.log(data);
   
-      console.log('Calendar updated:', updatedAesh);
-   
-    } catch (err) {
+        props.onSave(); // Call the onSave function to fetch the updated data and re-render the grandparent component with the new data.
+  
+        console.log('Calendar updated:', updatedAesh);
+  
+      } catch (err) {
       console.log('Error updating calendar:', err);
     }
+
     setEditedCells([]);
     setIsEditing(false);
   }
@@ -378,7 +434,7 @@ return (
       <tbody>
         {["Matin1", "Matin2", "Amidi1", "Amidi2"].map((rowKey, rowIndex) => (
           <tr key={rowIndex}>
-            <td>{rowKey === "Amidi1" ? "Après-midi 1" : rowKey === "Amidi2" ? "Après-midi 2" : rowKey.replace("Matin", "Matin ")}</td>
+            <td>{rowKey === "Amidi1" ? "A-midi 1" : rowKey === "Amidi2" ? "A-midi 2" : rowKey.replace("Matin", "Matin ")}</td>
             {["lundi", "mardi", "jeudi", "vendredi"].map((dayKey, colIndex) => (
               <td key={colIndex}>
                 {isEditing ? (
@@ -410,7 +466,7 @@ return (
       {props.child && (
         <>
           <div>
-            <span key="prenom">Prénom :</span>
+            <span key="prenom">{props.classes ? "" : "Prénom :"}</span>
             <span
             contentEditable={isEditing}
             className={
@@ -425,7 +481,7 @@ return (
           {isEditing ? (
             <>
             <div>
-          <span key="classe">Classe :</span>
+          <span key="classe">{props.classes ? "" : "Classe :"}</span>
            <span key="classe-valeur">
               <Select
                 defaultValue={{
@@ -440,8 +496,8 @@ return (
             </span>
             </div>
             <div>
-            <span key="prof">Prof :</span>
-            <span>
+            <span key="prof">{props.classes ? "" : "Prof :"}</span>
+           
               <Select
                 defaultValue={{
                   value: selectedValue,
@@ -453,24 +509,24 @@ return (
                 options={valueOptions}
                 placeholder="Select a value"
               />
-              </span>
+              
               </div>
             </>
           ) : (
             <>
             <div>
-            <span key="classe">Classe :</span>
+            <span key="classe">{props.classes ? "" : "Classe :"}</span>
             <span key="classe-valeur">{selectedCategory}</span>
           </div>
           <div>
-            <span key="prof">Prof :</span>
+            <span key="prof">{props.classes ? "" : "Prof :"}</span>
             <span key="prof-valeur"></span>
             {selectedValue}
           </div>
           </>
           )}
           <div>
-            <span key="heures-accordees">Heures accordées :</span>
+            <span key="heures-accordees">{props.classes ? "" : "Heures acc:"}</span>
             <span key="heures-accordees-valeur"><span
             contentEditable={isEditing}
             className={
@@ -482,11 +538,11 @@ return (
           </span></span>
           </div>
           <div>
-            <span key="heures-reelles">Heures réelles :</span>
+            <span key="heures-reelles">{props.classes ? "" : "Heures réelles :"}</span>
             {props.heuresReels}
           </div>
           <div>
-            <span key="difference">Différence :</span>
+            <span key="difference">{props.classes ? "" : "Différence : :"}</span>
             <span key="difference-valeur">{subtractTime(heures,props.heuresReels)}</span>
           </div>
         </>
@@ -525,15 +581,31 @@ return (
           </div>
         </>
       )}
-      {props.Aesh && (
+      {props.Aesh  && (
         <>
           <div>
             <span key="prenom">Prénom :</span>
-            <span key="prenom-valeur">{props.Aesh.Prénom}</span>
-          </div>
+            <span
+            contentEditable={isEditing}
+            className={
+              isEditing ? styles.prenomEditable : styles.prenomNotEditable
+            }
+            onBlur={(event) => setPrenomAesh(event.target.innerText)}
+          >
+           {aeshPrenom}
+          </span>
+            </div>
           <div>
             <span key="contrat">Contrat :</span>
-            <span key="contrat-valeur">{props.Aesh.Contrat}</span>
+            <span key="heures-accordees-valeur"><span
+            contentEditable={isEditing}
+            className={
+              isEditing ? styles.heureEditable : styles.heureNotEditable
+            }
+            onBlur={(event) => setContrat(event.target.innerText)}
+          >
+            {contrat}
+          </span></span>
           </div>
           <div>
             <span key="hReals">Heures Réelles :</span>
@@ -542,6 +614,25 @@ return (
           <div>
             <span key="diff">Différence :</span>
             <span key="diff-valeur">{props.diff}</span>
+          </div>
+        </>
+      )}
+      {props.newAesh  && (
+        <>
+          <div>
+            <span key="prenom">Prénom :</span>
+            <Input placeholder="Prénom" onChange={(e) => setPrenom(e.target.value)} value={prenom} />          </div>
+          <div>
+            <span key="contrat">Contrat :</span>
+            <Input placeholder="Contrat" onChange={(e) => setHeuresAcc(e.target.value)} value={heuresAcc} />
+          </div>
+          <div>
+            <span key="hReals">Heures Réelles :</span>
+            <span key="hReals-valeur">{heurresReals}</span>
+          </div>
+          <div>
+            <span key="diff">Différence :</span>
+            <span key="diff-valeur">{diff}</span>
           </div>
         </>
       )}

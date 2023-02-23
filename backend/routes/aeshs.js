@@ -28,29 +28,41 @@ router.get("/getOne/:id", async function (req, res, next) {
   }
 });
 
+router.put('/update', function (req,res,next){
+  Aesh.updateOne({
+       _id : req.body.aeshID},
+   {  Prénom :req.body.prenom,
+      Contrat : req.body.heures,
+     })
+  .then((data) => {res.json({data})})
+  })
 
-
-
-router.put("/:id", async (req, res) => {
-  console.log(req.body)
-  const { Planning } = req.body;
-  try {
-    const aesh = await Aesh.findOne({ _id: req.params.id });
-    if (!aesh) {
-      return res.status(404).json({ message: "Aesh not found" });
+  router.put("/:id", async (req, res) => {
+    console.log(req.body);
+    const { Planning, prenom, contrat } = req.body; // destructure prenom and contrat from req.body
+    try {
+      const aesh = await Aesh.findOne({ _id: req.params.id });
+      if (!aesh) {
+        return res.status(404).json({ message: "Aesh not found" });
+      }
+      // Update prenom and contrat fields
+      if (prenom) {
+        aesh.Prénom = prenom;
+      }
+      if (contrat) {
+        aesh.Contrat = contrat;
+      }
+      // Loop through each object in the Planning array and update the corresponding field in the document
+      Planning.forEach(({ day, shift, value }) => {
+        const path = `Planning.${day}.${shift}`;
+        aesh.set(path, value);
+      });   
+      const updatedAesh = await aesh.save();
+      res.status(200).json(updatedAesh);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
     }
-    // Loop through each object in the Planning array and update the corresponding field in the document
-    Planning.forEach(({ day, shift, value }) => {
-      const path = `Planning.${day}.${shift}`;
-      aesh.set(path, value);
-    });
-
-    const updatedAesh = await aesh.save();
-    res.status(200).json(updatedAesh);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+  });
 
 router.put("/editKid/:id", async (req, res) => {
   const { day, shift, value } = req.body.Planning;
@@ -69,5 +81,40 @@ router.put("/editKid/:id", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
+router.post('/post', async function (req, res, next) {
+  try {
+    console.log(req.body)
+    const { Planning } = req.body;
+    const newAesh = new Aesh({
+      Prénom: req.body.prenom,
+      Contrat : req.body.contrat,    
+    });
+    Planning.forEach(({ day, shift, value }) => {
+      const path = `Planning.${day}.${shift}`;
+      newAesh.set(path, value);
+    });
+    const result = await newAesh.save();   
+    res.status(201).json({ result: result });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+router.delete("/deleteone/:id", async function (req, res, next) {
+  try {
+    const result = await Aesh.deleteOne({ _id: req.params.id });
+    res.status(201).json({ deleteaesh: result });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
+
+
+
 
 module.exports = router;

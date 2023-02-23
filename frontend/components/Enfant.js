@@ -163,14 +163,18 @@ function getClass(classe) {
       <div id={props._id} className={`${styles.table} ${getClass(props.Classe)}`}>
       <div className={styles.row1} >   
       <AiOutlineUser />
-          <span
-            contentEditable={isEditable}
-            className={
-              isEditable ? styles.prenomEditable : styles.prenomNotEditable
-            }
-            onBlur={(event) => setPrenom(event.target.innerText)}
-          >
-           {prenom}
+          <span>
+          {isEditable ? (
+            <Input
+              value={prenom}
+              className={styles.prenomEditable}
+              onChange={(event) => setPrenom(event.target.value)}
+              readOnly={!isEditable}
+            />
+          ) : (
+            <span className={styles.prenomNotEditable}>{prenom}</span>
+          )}
+           
           </span>
           </div>  
 

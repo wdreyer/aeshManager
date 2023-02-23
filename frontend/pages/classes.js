@@ -8,9 +8,15 @@ import styles from '../styles/Classes.module.css'
 function Classe () {
 const[enfantData, setEnfantData] = useState ([]) ;
 const [selectedClasses, setSelectedClasses] = useState([]);
+const [classOrder,setClassOrder] = useState([])
 const settings = useSelector((state) => state.users.settings);
-const classOrder = ["CP", "CE1", "CE2", "CM1", "CM2", "Ulyss"];
 
+
+useEffect(() => {
+  const classinter = settings.Classes;
+    setClassOrder(classinter.map((item) => Object.keys(item)[0]));
+  
+}, [])
 
 
 const handleCheckboxChange = (event) => {
@@ -29,8 +35,6 @@ const handleCheckboxChange = (event) => {
   });
 };
 
-console.log("selections",selectedClasses)
-
 
 const fetchEnfants = async () => {
     try {
@@ -39,8 +43,11 @@ const fetchEnfants = async () => {
      
       const sortedEnfantData = data.data
       .filter((e) => e._id !== "63ee549d4b6de7f8cedfcb46" && selectedClasses.includes(e.Classe))
+      setEnfantData(sortedEnfantData.sort())
+
+
     setEnfantData(sortedEnfantData);
-    console.log(enfantData)
+    
       
     } catch (error) {
       console.error(error);

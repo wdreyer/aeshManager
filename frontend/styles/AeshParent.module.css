@@ -6,6 +6,16 @@
   background-color:   #ececec;;
   min-height: 100vh;
 }
+.topBar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 33px;
+  margin-left: 73px;
+}
+.add {
+	margin-right: auto;
+}
 .table{
 	display: flex;
 	flex-direction: row;
@@ -13,7 +23,7 @@
 	align-items: center;
 	justify-content: space-between;
 	width: 100%;
-	max-width: 600px;
+	width: 600px;
 	border-radius: 2px;
 	background-color: #fFFFFF;
 	height: 40px;

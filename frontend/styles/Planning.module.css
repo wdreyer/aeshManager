@@ -6,10 +6,13 @@
 }
 .classemodal {
   display: flex;
-  flex-direction: column;
-  width: 600px;
+  width: 587px;
   justify-content: center;
-  margin:15px;
+  margin-right:15px;
+  position: relative;
+  margin-bottom: 15px;
+  flex-direction: column-reverse;
+
 }
 .rightSide {
   margin: 10px;
@@ -26,27 +29,33 @@
   padding-bottom:4px ;
 }
 .rightSideCLasse {
-    margin: 10px;
-    width: 600px;
-    height: 200px;
     box-shadow: 0 1px 2px 0 rgb(0 0 0 / 3%), 0 1px 6px -1px rgb(0 0 0 / 2%), 0 2px 4px 0 rgb(0 0 0 / 2%);
     display: flex;
-    flex-direction: column;
-    height: 100%;
-    background-color: #ececec;
+    background-color: white;
     align-items: center;
     border-radius: 5px;
-    padding-top: 4px;
-    padding-bottom:4px ;
+    justify-content: space-around;
+    width: 550px;
+    margin-right:15px;
+    border: 1px solid rgba(0,0, 0, 0.3);
   
+}
+.rightSideCLasse div{
+  font-size: 15px;
+  background-color: #fff;
+  padding : 5px;
+  margin: 2px;
+  border-radius: 5px;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 3%), 0 1px 6px -1px rgb(0 0 0 / 2%), 0 2px 4px 0 rgb(0 0 0 / 2%);
+  display: flex;
+
 }
 
 .calendar {
   background: #ececec;
   border-radius: 8px;
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 3%), 0 1px 6px -1px rgb(0 0 0 / 2%), 0 2px 4px 0 rgb(0 0 0 / 2%);
-  margin: 10px;
-  width: 600px;
+  width: 550px;
   height: 250px;
 }
 .rightSide div {
@@ -62,6 +71,9 @@
   align-items: center;
 }
 .rightSide input {
+  width: 48%;
+}
+.rightSideCLasse input {
   width: 48%;
 }
 
@@ -91,23 +103,23 @@
 .editCLasse {
   font-size: 30px;
   background-color: #fff;
-  padding : 5px;
-  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 3%), 0 1px 6px -1px rgb(0 0 0 / 2%), 0 2px 4px 0 rgb(0 0 0 / 2%);
+  padding: 5px;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 30%), 0 1px 6px -1px rgb(0 0 0 / 2%), 0 2px 4px 0 rgb(0 0 0 / 2%);
   border-radius: 5px;
   color: grey;
   cursor: pointer;
+  position: absolute;
+  top: 3px;
+  right: 6px;
 }
 
 
 .edit:hover{
   color:black;
 }
-.prenomNotEditable {
-  padding : 5px;
-}
+
 .prenomEditable {
   border-bottom: 1px solid grey;
-  padding : 5px;
 }
 
 .heureNotEditable {

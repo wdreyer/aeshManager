@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const AeshSchema = mongoose.Schema(
   {
     Prénom: { type: String, required: true },
-    Contrat: { type: Number, required: true },
+    Contrat: { type: String, required: true },
     Planning: {
       lundi: {
         Matin1: { type: mongoose.Schema.Types.ObjectId, ref: 'Enfant'  },

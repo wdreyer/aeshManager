@@ -48,12 +48,7 @@ const fetchEnfants = async () => {
       const bClassIndex = classes.indexOf(b.Classe);
       return aClassIndex - bClassIndex;
     });
-    
     setEnfantData(sortedEnfantData);
-
-    
-   
-   
     console.log("fetching",data)
   } catch (error) {
     console.error(error);
