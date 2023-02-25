@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.0.1",
+    "@emotion/react": "^11.10.6",
+    "@mui/material": "^5.11.10",
     "@reduxjs/toolkit": "^1.9.2",
     "antd": "^5.2.0",
     "firebase": "^9.17.1",

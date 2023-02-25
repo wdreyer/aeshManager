@@ -215,14 +215,17 @@ function getClass(classe) {
           )}
 
           <div className={styles.row4}>
-          <span
-              contentEditable={isEditable}
-              className={
-                isEditable ? styles.heureEditable : styles.heureNotEditable
-              }
-              onBlur={(event) => setHeures(event.target.innerText)}
-            >
-              {heures}
+          <span>{isEditable ? (
+            <TimePicker
+            ampm={false}
+            openTo="hours"
+            views={['hours', 'minutes']}
+            value={heures}
+            onChange={setHeures}
+          />
+          ) : (
+            <span>{heures}</span>
+          )}
             </span>
           </div>
           <span className={styles.row5}>{heuresReels}</span>
