@@ -3,11 +3,7 @@ import {  useSelector } from 'react-redux';
 import { subtractTime } from "./time";
 import { useEffect, useState } from "react";
 
-
-
 function calculhour(id, rates) {
-  console.log("rates", rates)
-  console.log("and id",id)
 
   return new Promise((resolve, reject) => {
     fetch("http://localhost:3000/aeshs")
@@ -30,7 +26,6 @@ function calculhour(id, rates) {
         let minutes = total % 60;
         const totalTime = hours.toString().padStart(2, "0") +
             ":" + minutes.toString().padStart(2, "0");
-
         console.log("totaltime",totalTime);
         resolve(totalTime);
       })

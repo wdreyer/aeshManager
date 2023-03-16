@@ -138,3 +138,9 @@
     backdrop-filter: blur(30px);
     
   }
+  .hour {
+    width: 55px;
+  }
+  .doublepoint {
+    font-size: 15px;
+  }

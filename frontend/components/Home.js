@@ -35,24 +35,28 @@ useEffect(() => {
     });
 }, []);
 
-const fetchEnfants = async () => {
+const fetchEnfants = () => {
   console.log("are you refetching ?")
-  try {
-    const response = await fetch("http://localhost:3000/enfants");
-    const data = await response.json();
-    // setEnfantData(data.data.filter((e) => e._id !== "63ee549d4b6de7f8cedfcb46"));
-   
-    const sortedEnfantData = data.data.filter((e) => e._id !== "63ee549d4b6de7f8cedfcb46").sort((a, b) => {
-      const classes = ["CP", "CE1", "CE2", "CM1", "CM2", "Ulyss"];
-      const aClassIndex = classes.indexOf(a.Classe);
-      const bClassIndex = classes.indexOf(b.Classe);
-      return aClassIndex - bClassIndex;
+  fetch("http://localhost:3000/enfants")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      const sortedEnfantData = data.data.filter((e) => e._id !== "63ee549d4b6de7f8cedfcb46").sort((a, b) => {
+        const classes = ["CP", "CE1", "CE2", "CM1", "CM2", "Ulyss"];
+        const aClassIndex = classes.indexOf(a.Classe);
+        const bClassIndex = classes.indexOf(b.Classe);
+        return aClassIndex - bClassIndex;
+      });
+      setEnfantData(sortedEnfantData);
+      console.log("fetching",enfantData)
+    })
+    .catch((error) => {
+      console.error(error);
     });
-    setEnfantData(sortedEnfantData);
-    console.log("fetching",data)
-  } catch (error) {
-    console.error(error);
-  }
 };
   
   useEffect(() => {
@@ -69,9 +73,8 @@ const fetchEnfants = async () => {
 
   const enfants = enfantData.map((data, i) => {
     const childPlanning = planning[data._id];
-    return <Enfant key={i} rates={rates} planningChild={childPlanning} onSave={fetchEnfants}  {...data} {...childPlanning} />;
+    return <Enfant key={data._id} rates={rates} planningChild={childPlanning} onSave={fetchEnfants}  {...data} {...childPlanning} />;
   });
-
 
   return (
     <div className={styles.container}>

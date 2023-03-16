@@ -58,7 +58,7 @@
   width: 550px;
   height: 250px;
 }
-.rightSide div {
+.rightSideDiv {
   font-size: 15px;
   background-color: #fff;
   padding : 5px;
@@ -122,18 +122,11 @@
   border-bottom: 1px solid grey;
 }
 
-.heureNotEditable {
-  padding-bottom: 1px;
-  padding-left: 5px;
-  padding-right: 5px;
-
+.hour  {
+  width: 55px;
 }
-.heureEditable {
-border-bottom: 1px solid grey;
-padding-bottom: 1px;
-padding-left: 5px;
-padding-right: 5px;
-
+.doublepoint {
+  font-size: 15px;
 }
 
 

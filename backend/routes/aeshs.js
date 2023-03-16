@@ -4,6 +4,7 @@ const Aesh = require("../models/Aesh");
 const Enfant = require("../models/Enfant");
 const ObjectId = require('mongodb').ObjectId;
 
+
 router.get("/", function (req, res, next) {
   Aesh.find({})
     .populate("Planning.lundi.Matin1 Planning.lundi.Matin2 Planning.lundi.Amidi1 Planning.lundi.Amidi2")
@@ -38,7 +39,6 @@ router.put('/update', function (req,res,next){
   })
 
   router.put("/:id", async (req, res) => {
-    console.log(req.body);
     const { Planning, prenom, contrat } = req.body; // destructure prenom and contrat from req.body
     try {
       const aesh = await Aesh.findOne({ _id: req.params.id });
@@ -58,11 +58,22 @@ router.put('/update', function (req,res,next){
         aesh.set(path, value);
       });   
       const updatedAesh = await aesh.save();
+      console.log(updatedAesh.Planning)
       res.status(200).json(updatedAesh);
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
   });
+
+router.put("/updateHours/:id", async (req, res) => {
+  Aesh.updateOne({_id :  req.params.id},
+    {
+      HeuresReels :req.body.HeuresReels,
+    })
+    .then((data) => {res.json({data})})
+ }
+)
+
 
 router.put("/editKid/:id", async (req, res) => {
   const { day, shift, value } = req.body.Planning;
@@ -111,10 +122,5 @@ router.delete("/deleteone/:id", async function (req, res, next) {
     res.status(500).json({ message: "Server error" });
   }
 });
-
-
-
-
-
 
 module.exports = router;

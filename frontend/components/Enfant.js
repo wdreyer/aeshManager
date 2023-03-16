@@ -1,5 +1,5 @@
  import styles from "../styles/Enfant.module.css";
- import { Select, Input,Button, Modal, Space } from 'antd';
+ import { Select, Input,InputNumber,Button, Modal, Space } from 'antd';
  import Planning from "../components/Planning";
  import {subtractTime,multiplyTime} from '../modules/time'
  import { ExclamationCircleOutlined } from '@ant-design/icons';
@@ -15,10 +15,17 @@ function Enfant(props) {
   const [isEditable, setEditable] = useState(false);
   const [prenom, setPrenom] = useState(props.Prénom);
   const [heures, setHeures] = useState(props.Heures);
+  const [hours, setHours] = useState();
+  const [minutes, setMinutes] = useState();
   const [heuresReels, setheuresReels] = useState(props.HeuresReels)
-  const [dataAesh, setDataAesh] = useState([]);
   const settings = useSelector((state) => state.users.settings);
-  const classes = settings.Classes;  
+  const classes = settings.Classes || [];
+
+useEffect(() => {
+  const [heureEnChiffres, minutesEnChiffres] = props.Heures.split(":").map(Number);
+  setHours(heureEnChiffres);
+  setMinutes(minutesEnChiffres);
+}, []);
 
 
 function getClass(classe) {
@@ -46,10 +53,6 @@ function getClass(classe) {
 
   const [selectedCategory, setSelectedCategory] = useState(props.Classe);
   const [selectedValue, setSelectedValue] = useState(props.Prof);
-
-
-  
-
 
   const handleCategoryChange = (value) => {
     setSelectedCategory(value);
@@ -114,27 +117,36 @@ function getClass(classe) {
   // fin de la fonction
 
   //fonction pour update un enfant :
-  const updateEnfant = async () => { 
-    try {
-      const response = await fetch("http://localhost:3000/enfants/update", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          enfantID: props._id,
-          prenom: prenom,
-          heures: heures,
-          classe: selectedCategory ,
-          prof: selectedValue,
-        }),
+  const updateEnfant = () => {
+    const heureEnChiffres = hours.toString().padStart(2, "0")
+    const minutesEnChiffres = minutes.toString().padStart(2, "0")
+    setHeures(heureEnChiffres + ':' + minutesEnChiffres)  
+    fetch("http://localhost:3000/enfants/update", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        enfantID: props._id,
+        prenom: prenom,
+        heures: heureEnChiffres + ':' + minutesEnChiffres,
+        classe: selectedCategory,
+        prof: selectedValue,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+        props.onSave();
+      })
+      .catch((error) => {
+        console.error(error);
       });
-      const data = await response.json();
-      console.log(data);
-      props.onSave();
-    } catch (error) {
-      console.error(error);
-    }
   };
   // fin de la fonction 
 
@@ -174,7 +186,7 @@ function getClass(classe) {
           ) : (
             <span className={styles.prenomNotEditable}>{prenom}</span>
           )}
-           
+
           </span>
           </div>  
 
@@ -216,20 +228,20 @@ function getClass(classe) {
 
           <div className={styles.row4}>
           <span>{isEditable ? (
-            <TimePicker
-            ampm={false}
-            openTo="hours"
-            views={['hours', 'minutes']}
-            value={heures}
-            onChange={setHeures}
-          />
+            <>
+            <InputNumber className={styles.hour}   onChange={value => setHours(value)} min={0} max={50} defaultValue={hours}   />
+            <span className={styles.doublepoint}> : </span> <InputNumber className={styles.hour} onChange={(value) => setMinutes(value)} min={0} max={45} step={15} defaultValue={minutes}  />
+            </>
+           
           ) : (
+
+
             <span>{heures}</span>
           )}
             </span>
           </div>
           <span className={styles.row5}>{heuresReels}</span>
-          <span className={styles.row6}>{subtractTime(heuresReels,heures)}</span>
+          <span className={styles.row6}>{subtractTime(heures,heuresReels)}</span>
           
           <div className={styles.rightBtn}>
           <AiOutlineCalendar onClick={showModal} className={styles.calendar} />
@@ -252,7 +264,7 @@ function getClass(classe) {
           open={isModalOpen}
           width={900}
         > 
-        <Planning id={props._id} heuresReels={heuresReels} diff={subtractTime(heuresReels,heures)} prenom={prenom} child={props} onSave={props.onSave} planningChild={props.planningChild}/>      
+        <Planning id={props._id} heuresReels={heuresReels}  prenom={prenom} child={props} onSave={props.onSave} planningChild={props.planningChild}/>      
         </Modal>       
       </div>
     </>

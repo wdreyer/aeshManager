@@ -4,6 +4,7 @@ const AeshSchema = mongoose.Schema(
   {
     Prénom: { type: String, required: true },
     Contrat: { type: String, required: true },
+    HeuresReels : String , 
     Planning: {
       lundi: {
         Matin1: { type: mongoose.Schema.Types.ObjectId, ref: 'Enfant'  },

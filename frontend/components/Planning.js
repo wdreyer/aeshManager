@@ -2,14 +2,15 @@ import styles from '../styles/Planning.module.css'
 import { useState, useEffect } from 'react';
 import { subtractTime, multiplyTime } from '../modules/time'
 import { AiOutlineEdit, AiOutlineSave } from "react-icons/ai";
-import { Select, Input,Button, Modal, Space } from 'antd';
+import { Select, InputNumber, Input,Button, Modal, Space } from 'antd';
 import {getPlanningById} from "../modules/planningforone"
 import {  useSelector } from 'react-redux';
 import { calculhour } from '../modules/calculHour';
+import { calculateTotalAesh } from '../modules/calculHourAesh';
       
 function Planning(props) {
   const [planning, setPlanning] = useState([]);
-  const [heurresReals, setHeurresReals] = useState(0);
+  const [heurresReals, setHeurresReals] = useState("00:00");
   const [diff, setDiff] = useState(0);
   const [totalTime,setTotalTime] = useState(0)
   const [enfantData, setEnfantData] = useState([]);
@@ -23,6 +24,8 @@ function Planning(props) {
   const [oldPrenom, setOldPrenom] = useState('');
   const [contrat,setContrat] = useState('');
   const [aeshPrenom,setPrenomAesh] = useState('')
+  const [hours, setHours] = useState();
+  const [minutes, setMinutes] = useState();
 
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedValue, setSelectedValue] = useState("");
@@ -35,18 +38,26 @@ function Planning(props) {
   const rates = intRates;   
   const classes = settings.Classes;  
 
-
   if (props.child) {
     useEffect(() => {
       setOldPrenom(props.prenom);
+      const [heureEnChiffres, minutesEnChiffres] = props.child.Heures.split(":").map(Number);
+      setHours(heureEnChiffres);
+      setMinutes(minutesEnChiffres);
     }, []);
+
+
   }
   if (props.Aesh) {
-    console.log()
+
     useEffect(() => {
-      setPrenomAesh(props.Aesh.Prénom);
+      setOldPrenom(props.Aesh.Prénom);
       setContrat(props.Aesh.Contrat);
-    }, []);
+      setHeurresReals(props.Aesh.HeuresReels)
+      const [heureEnChiffres, minutesEnChiffres] = props.Aesh.Contrat.split(":").map(Number);
+      setHours(heureEnChiffres);
+      setMinutes(minutesEnChiffres);
+    }, [props]);
   }
 
 
@@ -146,8 +157,7 @@ if (props.child) {
       }, [isEditing,editedCells])
   }
 // affichage planning si AESH
-  if (props.Aesh) {
-   
+  if (props.Aesh) {   
     useEffect(() => {
     fetch(`http://localhost:3000/aeshs/getOne/${props.Aesh._id}`)
       .then(response => response.json())
@@ -226,7 +236,6 @@ const handleEdit = () => {    // rendre éditable :
 }
 
   // sauvegarder l'édition 
-  // sauvegarder l'édition 
 const updateCalendar = async () => {
   if(props.newChild || props.newAesh){
     if( prenom.length <3 || selectedValue === undefined  ){
@@ -245,8 +254,7 @@ const updateCalendar = async () => {
       body: JSON.stringify({
         prenom: prenom,
         contrat : heuresAcc,
-        Planning: editedCells,
-      
+        Planning: editedCells,      
       })
     });
       setPrenom('');
@@ -261,7 +269,10 @@ catch (err) {
 
 
  }    
-    if(props.Aesh ){     
+    if(props.Aesh ){    
+      const heureEnChiffres = hours.toString().padStart(2, "0")
+      const minutesEnChiffres = minutes.toString().padStart(2, "0")
+      setContrat(heureEnChiffres + ':' + minutesEnChiffres)
       try {
         const updatedAesh = await fetch(`http://localhost:3000/aeshs/${props.Aesh._id}`, {
           method: 'PUT',
@@ -270,15 +281,28 @@ catch (err) {
           },
           body: JSON.stringify({
             prenom: aeshPrenom,
-            contrat : contrat,
+            contrat : heureEnChiffres + ':' + minutesEnChiffres,
             Planning: editedCells
           })
         })
         const data = await updatedAesh.json();
-        console.log(data);
-  
-        props.onSave(); // Call the onSave function to fetch the updated data and re-render the grandparent component with the new data.
-  
+        const heuresReels = calculateTotalAesh(data.Planning,rates);        try {
+          const updatedAesh = await fetch(`http://localhost:3000/aeshs/updateHours/${props.Aesh._id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              HeuresReels: heuresReels
+            })
+          }) 
+          props.onSave(); 
+        }
+          catch (err) {
+            console.log('Error updating Hours', err);
+          }
+
+        props.onSave(); 
         console.log('Calendar updated:', updatedAesh);
   
       } catch (err) {
@@ -288,8 +312,11 @@ catch (err) {
     setEditedCells([]);
     setIsEditing(false);
   }
-  if (props.child  ) {
-    console.log("try to update", selectedCategory)
+  if (props.child) {
+    const heureEnChiffres = hours.toString().padStart(2, "0")
+    const minutesEnChiffres = minutes.toString().padStart(2, "0")
+    setHeures(heureEnChiffres + ':' + minutesEnChiffres)
+   
     try {
       const response = await fetch("http://localhost:3000/enfants/update", {
         method: "PUT",
@@ -299,20 +326,17 @@ catch (err) {
         body: JSON.stringify({
           enfantID: props.id,
           prenom: oldPrenom,          
-          heures: heures,
+          heures: heureEnChiffres + ':' + minutesEnChiffres,
           classe: selectedCategory ,
           prof: selectedValue,
         }),
       });
       const data = await response.json();
-   
+
     } catch (error) {
       console.error(error);
     }
-
-
     try {
-
       for (const cell of editedCells) {
         const { day, shift, value, addTo } = cell;   
 
@@ -368,12 +392,9 @@ catch (err) {
       if (response.ok) {
         const responseData = await response.json();
         const idNewKid = responseData.kid._id
-        console.log("ik",responseData)
         for (const cell of editedCells) {
           const { day, shift, addTo } = cell;
           cell.value = idNewKid;
-          console.log("ready to send", cell);
-  
           try {
             await fetch(`http://localhost:3000/aeshs/editKid/${addTo}`, {
               method: 'PUT',
@@ -418,6 +439,8 @@ catch (err) {
 
 
   };
+
+   console.log("aeshprops",props)
 
 return (
   <div className={props.classes ? styles.classemodal :styles.modal} >
@@ -465,22 +488,23 @@ return (
     <div className={props.classes ? styles.rightSideCLasse : styles.rightSide}>
       {props.child && (
         <>
-          <div>
+          <div className={styles.rightSideDiv}>
             <span key="prenom">{props.classes ? "" : "Prénom :"}</span>
-            <span
-            contentEditable={isEditing}
-            className={
-              isEditing ? styles.prenomEditable : styles.prenomNotEditable
-            }
-            onBlur={(event) => setOldPrenom(event.target.innerText)}
-          >
-           {oldPrenom}
-          </span>
+             {isEditing ? (
+            <Input
+              value={oldPrenom}
+              
+              onChange={(event) => setOldPrenom(event.target.value)}
+              
+            />
+          ) : (
+            <span className={styles.prenomNotEditable}>{oldPrenom}</span>
+          )}
           </div>         
 
           {isEditing ? (
             <>
-            <div>
+            <div className={styles.rightSideDiv} > 
           <span key="classe">{props.classes ? "" : "Classe :"}</span>
            <span key="classe-valeur">
               <Select
@@ -495,7 +519,7 @@ return (
               />
             </span>
             </div>
-            <div>
+            <div className={styles.rightSideDiv}>
             <span key="prof">{props.classes ? "" : "Prof :"}</span>
            
               <Select
@@ -514,34 +538,33 @@ return (
             </>
           ) : (
             <>
-            <div>
+            <div className={styles.rightSideDiv}>
             <span key="classe">{props.classes ? "" : "Classe :"}</span>
             <span key="classe-valeur">{selectedCategory}</span>
           </div>
-          <div>
+          <div className={styles.rightSideDiv}>
             <span key="prof">{props.classes ? "" : "Prof :"}</span>
             <span key="prof-valeur"></span>
             {selectedValue}
           </div>
           </>
           )}
-          <div>
-            <span key="heures-accordees">{props.classes ? "" : "Heures acc:"}</span>
-            <span key="heures-accordees-valeur"><span
-            contentEditable={isEditing}
-            className={
-              isEditing ? styles.heureEditable : styles.heureNotEditable
-            }
-            onBlur={(event) => setHeures(event.target.innerText)}
-          >
-            {heures}
-          </span></span>
+          <div className={styles.rightSideDiv}>
+            <span key="heures-accordees">{props.classes ? "" : "Heures"}</span>
+           {isEditing ? (
+            <div className={styles.hContainer} >
+            <InputNumber  style={{width: '55px' , padding: '0px'}} className={styles.hour}   onChange={value => setHours(value)} min={0} max={50} defaultValue={hours}   />
+            <span className={styles.doublepoint}> : </span> <InputNumber   style={{width: '55px' , padding: '0px'}} className={styles.hour} onChange={(value) => setMinutes(value)} min={0} max={45} step={15} defaultValue={minutes}  />
+            </div> 
+            ): (
+              <span>{props.child.Heures}</span>
+              )}
           </div>
-          <div>
+          <div className={styles.rightSideDiv} >
             <span key="heures-reelles">{props.classes ? "" : "Heures réelles :"}</span>
             {props.heuresReels}
           </div>
-          <div>
+          <div className={styles.rightSideDiv}>
             <span key="difference">{props.classes ? "" : "Différence : :"}</span>
             <span key="difference-valeur">{subtractTime(heures,props.heuresReels)}</span>
           </div>
@@ -549,71 +572,76 @@ return (
       )}
       {props.newChild && (
         <>
-          <div>
+          <div className={styles.rightSideDiv}>
             <span key="prenom">Prénom </span>
             <Input placeholder="Prénom" onChange={(e) => setPrenom(e.target.value)} value={prenom} />
           </div>
-          <div>
+          <div className={styles.rightSideDiv} >
             <span key="classe">Classe :</span>
             <span key="classe-valeur">
               {" "}
               <Select defaultValue={selectedCategory} style={{ width: 100 }} onChange={handleCategoryChange} options={categoryOptions} placeholder="Select a category" />
             </span>
           </div>
-          <div>
+          <div className={styles.rightSideDiv}>
             <span key="prof">Prof :</span>
             <span key="prof-valeur">
               {" "}
               <Select value={selectedValue} style={{ width: 100 }} onChange={handleValueChange} options={valueOptions} placeholder="Select a value" disabled={selectedCategory === ""} />
             </span>
           </div>
-          <div>
-            <span key="heures-accordees">Heures accordées :</span>
-            <Input placeholder="Heures Acc." onChange={(e) => setHeuresAcc(e.target.value)} value={heuresAcc} />
+          <div className={styles.rightSideDiv} >
+          <span key="heures-accordees">{props.classes ? "" : "Heures"}</span>
+          <div className={styles.hContainer} >
+            <InputNumber  style={{width: '55px' , padding: '0px'}} className={styles.hour}   onChange={value => setHours(value)} min={0} max={50} defaultValue={hours}   />
+            <span className={styles.doublepoint}> : </span> <InputNumber   style={{width: '55px' , padding: '0px'}} className={styles.hour} onChange={(value) => setMinutes(value)} min={0} max={59} defaultValue={minutes}  />
+            </div> 
+            
           </div>
-          <div>
+          <div className={styles.rightSideDiv} >
             <span key="heures-reelles">Heures réelles :</span>
             <span key="heures-reelles-valeur">{heurresReals}</span>
           </div>
-          <div>
+          <div className={styles.rightSideDiv} >
             <span key="difference">Différence :</span>
             <span key="difference-valeur">{diff}</span>
           </div>
         </>
       )}
       {props.Aesh  && (
+       
         <>
-          <div>
+          <div  className={styles.rightSideDiv} >
             <span key="prenom">Prénom :</span>
-            <span
-            contentEditable={isEditing}
-            className={
-              isEditing ? styles.prenomEditable : styles.prenomNotEditable
-            }
-            onBlur={(event) => setPrenomAesh(event.target.innerText)}
-          >
-           {aeshPrenom}
-          </span>
+            {isEditing ? (
+              <Input
+                value={oldPrenom}
+                
+                onChange={(event) => setOldPrenom(event.target.value)}
+                
+              />
+            ) : (
+              <span className={styles.prenomNotEditable}>{oldPrenom}</span>
+            )}
             </div>
-          <div>
+          <div  className={styles.rightSideDiv} >
             <span key="contrat">Contrat :</span>
-            <span key="heures-accordees-valeur"><span
-            contentEditable={isEditing}
-            className={
-              isEditing ? styles.heureEditable : styles.heureNotEditable
-            }
-            onBlur={(event) => setContrat(event.target.innerText)}
-          >
-            {contrat}
-          </span></span>
+            {isEditing ? (
+              <div className={styles.hContainer} >
+              <InputNumber  style={{width: '55px' , padding: '0px'}} className={styles.hour}   onChange={value => setHours(value)} min={0} max={50} defaultValue={hours}   />
+              <span className={styles.doublepoint}> : </span> <InputNumber   style={{width: '55px' , padding: '0px'}} className={styles.hour} onChange={(value) => setMinutes(value)} min={0} max={45} step={15} defaultValue={minutes}  />
+              </div> 
+              ): (
+                <span>{contrat}</span>
+                )}
           </div>
-          <div>
+          <div  className={styles.rightSideDiv} >
             <span key="hReals">Heures Réelles :</span>
-            <span key="hReals-valeur">{props.hReals}</span>
+            <span key="hReals-valeur">{heurresReals}</span>
           </div>
-          <div>
+          <div  className={styles.rightSideDiv}>
             <span key="diff">Différence :</span>
-            <span key="diff-valeur">{props.diff}</span>
+            <span key="diff-valeur">{subtractTime(contrat,heurresReals)}</span>
           </div>
         </>
       )}

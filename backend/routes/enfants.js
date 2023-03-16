@@ -18,6 +18,7 @@ router.get('/getOne/:id', function(req, res, next) {
 });
 
 router.put('/update', function (req,res,next){
+  console.log('ici',req.body)
     Enfant.updateOne({
          _id : req.body.enfantID},
      {  Prénom :req.body.prenom,
@@ -30,7 +31,6 @@ router.put('/update', function (req,res,next){
 
     
 router.put('/updateHeures', function (req,res,next){
-  console.log("routing",req.body)
     Enfant.updateOne({
          _id : req.body.enfantID},
      {  HeuresReels :req.body.HeuresReels,

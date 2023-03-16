@@ -48,8 +48,8 @@ function AeshPage() {
       });
   }, []);
 
-  const aeshs = dataAesh.map((data,i) => {
-    return <Aesh setting={settingData} onSave={fetchAesh} key={i} {...data} />;
+  const aeshs = dataAesh.map((data) => {
+    return <Aesh setting={settingData} onSave={fetchAesh} key={data._id} {...data} />;
   });
 
   return (
