@@ -1,9 +1,4 @@
 function subtractTime(time1, time2) {
-  if (!time1 || !time2) {
-    console.error("Invalid time values:", time1, time2);
-    return 0; // Or any other default value that suits your needs
-  }
-
   let time1InMinutes = parseInt(time1.split(":")[0]) * 60 + parseInt(time1.split(":")[1]);
   let time2InMinutes = parseInt(time2.split(":")[0]) * 60 + parseInt(time2.split(":")[1]);
   let resultInMinutes = time1InMinutes - time2InMinutes;

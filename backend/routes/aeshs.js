@@ -4,7 +4,6 @@ const Aesh = require("../models/Aesh");
 const Enfant = require("../models/Enfant");
 const ObjectId = require('mongodb').ObjectId;
 
-
 router.get("/", function (req, res, next) {
   Aesh.find({})
     .populate("Planning.lundi.Matin1 Planning.lundi.Matin2 Planning.lundi.Amidi1 Planning.lundi.Amidi2")
@@ -76,6 +75,7 @@ router.put("/updateHours/:id", async (req, res) => {
 
 
 router.put("/editKid/:id", async (req, res) => {
+  console.log("Received request at /editKid/:id");
   const { day, shift, value } = req.body.Planning;
   const addTo = req.body.Planning.addTo;
   console.log("in the router",req.body)
@@ -100,6 +100,7 @@ router.post('/post', async function (req, res, next) {
     const newAesh = new Aesh({
       Prénom: req.body.prenom,
       Contrat : req.body.contrat,    
+      HeuresReels : req.body.HeuresReels,
     });
     Planning.forEach(({ day, shift, value }) => {
       const path = `Planning.${day}.${shift}`;
@@ -122,5 +123,7 @@ router.delete("/deleteone/:id", async function (req, res, next) {
     res.status(500).json({ message: "Server error" });
   }
 });
+
+
 
 module.exports = router;

@@ -7,7 +7,9 @@ import {getPlanningById} from "../modules/planningforone"
 import {  useSelector } from 'react-redux';
 import { calculhour } from '../modules/calculHour';
 import { calculateTotalAesh } from '../modules/calculHourAesh';
-      
+import { calculAllHour } from '../modules/calculAllHours';
+import { updateAllChildrenHours} from '../modules/updateChildHours';
+
 function Planning(props) {
   const [planning, setPlanning] = useState([]);
   const [heurresReals, setHeurresReals] = useState("00:00");
@@ -26,6 +28,11 @@ function Planning(props) {
   const [aeshPrenom,setPrenomAesh] = useState('')
   const [hours, setHours] = useState();
   const [minutes, setMinutes] = useState();
+  const [newAeshData, setNewAeshData] = useState(null);
+  const [selectKey, setSelectKey] = useState(0);
+  const [selectKeyMinutes, setSelectKeyMinutes] = useState(0);
+
+
 
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedValue, setSelectedValue] = useState("");
@@ -38,6 +45,32 @@ function Planning(props) {
   const rates = intRates;   
   const classes = settings.Classes;  
 
+
+const  transformPlanningData = (planningData) => {
+    const transformedData = {};
+  
+    for (const day in planningData) {
+      transformedData[day] = {};
+      for (const period in planningData[day]) {
+        transformedData[day][period] = planningData[day][period]._id;
+      }
+    }
+  
+    return transformedData;
+  }
+
+  function resetFields() {
+    setIsEditing(true);
+    setPrenom('');
+    setSelectedCategory('');
+    setSelectedValue('');
+    setHours(0);
+    setMinutes(0);
+    setEditedCells([]);
+    setSelectKey(selectKey + 1);
+  }
+
+
   if (props.child) {
     useEffect(() => {
       setOldPrenom(props.prenom);
@@ -49,7 +82,6 @@ function Planning(props) {
 
   }
   if (props.Aesh) {
-
     useEffect(() => {
       setOldPrenom(props.Aesh.Prénom);
       setContrat(props.Aesh.Contrat);
@@ -102,12 +134,17 @@ const valueOptions =
     : [];
 
     
-  if (props.newChild || props.newAesh){
     useEffect(() => {
-    setIsEditing(true)
-  }, []);
-  }
-
+      if (props.newChild || props.newAesh) {
+        setIsEditing(true);
+        setPrenom('');
+        setSelectedCategory('');
+        setSelectedValue('');
+        setHours(0);
+        setMinutes(0);
+        setPlanning([]);
+      }
+    }, [props.newChild, props.newAesh]);
 
   // on crée les listes selectionnables
   if (props.Aesh || props.newAesh) {
@@ -125,6 +162,7 @@ const valueOptions =
   }  
   if (props.child || props.newChild) {
     useEffect(() => {
+
       fetch("http://localhost:3000/aeshs")
         .then((response) => response.json())
         .then((data) => {
@@ -145,7 +183,7 @@ if (props.child) {
     setHeures(props.child.Heures);
     setSelectedCategory(props.child.Classe);
     setSelectedValue(props.child.Prof);
-  },[])
+  },[props])
  
     useEffect(() => {
       fetch('http://localhost:3000/aeshs')
@@ -154,7 +192,7 @@ if (props.child) {
           const childPlanning = getPlanningById(data, props.id);
           setPlanning(childPlanning.Planning)            
        });
-      }, [isEditing,editedCells])
+      }, [isEditing,editedCells,props])
   }
 // affichage planning si AESH
   if (props.Aesh) {   
@@ -182,36 +220,63 @@ if (props.child) {
     setEditedCells((prev) => [...prev, newCell]);
 
 }
-else if (props.child){
-  let newCell = { day: rowKey , shift: cellId , value: props.id , addTo : selectedOption }; 
-  if(selectedOption === "Ajouter"){
-    return
-  }
-  if(selectedOption === undefined) {
-    if(editedCells.some(cell => cell.day === rowKey && cell.shift === cellId)) {
-      setEditedCells(prev => prev.filter(cell => !(cell.day === rowKey && cell.shift === cellId)));
-    } else if (planning[rowKey] && planning[rowKey][cellId] && planning[rowKey][cellId]._id){
+else if (props.child) {
+  let newCell = { day: rowKey, shift: cellId, value: props.id, addTo: selectedOption };
 
-      const idAesh = planning[rowKey][cellId]._id 
-      newCell = { day: rowKey , shift: cellId , value: "63ee549d4b6de7f8cedfcb46", addTo: idAesh };
-    }
-    else {
-      return
-    }
+  if (selectedOption === "Ajouter") {
+    return;
   }
-  setEditedCells(prev => [...prev, newCell]);
+
+  if (selectedOption === undefined) {
+    if (planning[rowKey] && planning[rowKey][cellId] && planning[rowKey][cellId]._id) {
+      const idAesh = planning[rowKey][cellId]._id;
+      newCell = { day: rowKey, shift: cellId, value: "63ee549d4b6de7f8cedfcb46", addTo: idAesh };
+
+      // Remove the old reference from editedCells
+      setEditedCells(prev => prev.filter(cell => !(cell.day === rowKey && cell.shift === cellId)));
+
+      // Add the new reference with the "63ee549d4b6de7f8cedfcb46" value
+      setEditedCells(prev => [...prev, newCell]);
+    } else {
+      return;
+    }
+  } else {
+    // If the cell has an AESH, first set its value to "63ee549d4b6de7f8cedfcb46"
+    if (planning[rowKey] && planning[rowKey][cellId] && planning[rowKey][cellId]._id) {
+      const idAesh = planning[rowKey][cellId]._id;
+      const oldCell = { day: rowKey, shift: cellId, value: "63ee549d4b6de7f8cedfcb46", addTo: idAesh };
+      
+      // Remove the old reference from editedCells
+      setEditedCells(prev => prev.filter(cell => !(cell.day === oldCell.day && cell.shift === oldCell.shift)));
+
+      // Add the new reference with the "63ee549d4b6de7f8cedfcb46" value
+      setEditedCells(prev => [...prev, oldCell]);
+    }
+
+    // Add the new reference with the selected AESH
+    setEditedCells(prev => [...prev, newCell]);
+  }
 }
-else if ( props.newChild){
-  let newCell = { day: rowKey , shift: cellId , value: "" , addTo : selectedOption  }; 
-  if(selectedOption === "Ajouter" || undefined){
-    if(editedCells.some(cell => cell.day === rowKey && cell.shift === cellId)) {
+else if (props.newChild) {
+  console.log("inside");
+  let newCell = { day: rowKey, shift: cellId, value: "", addTo: selectedOption };
+  console.log(newCell);
+
+  if (selectedOption === "Ajouter" || selectedOption === undefined) {
+    if (editedCells.some(cell => cell.day === rowKey && cell.shift === cellId)) {
       setEditedCells(prev => prev.filter(cell => !(cell.day === rowKey && cell.shift === cellId)));
     }
-    else if (planning[rowKey] && planning[rowKey][cellId] && planning[rowKey][cellId]._id){
-     newCell = { day: rowKey , shift: cellId , value: "", addTo : ""  }; 
-    }
+  }
+  // If the cell already has data, remove it from the editedCells array
+  else if (planning[rowKey] && planning[rowKey][cellId] && planning[rowKey][cellId]._id) {
+    setEditedCells(prev => prev.filter(cell => !(cell.day === rowKey && cell.shift === cellId)));
+  }
+  // If the cell doesn't have data, add the new cell to the editedCells array
+  else {
+    setEditedCells((prev) => [...prev, newCell]);
   }
 }
+
   else if (props.newAesh){   
     let newCell = { day: rowKey , shift: cellId , value: selectedOption  }; //,
     if(selectedOption === undefined){
@@ -224,11 +289,13 @@ else if ( props.newChild){
       }
     }
     setEditedCells((prev) => [...prev, newCell]);
-    console.log(editedCells)
+
   }
 
 
 }   
+
+
 
 
 const handleEdit = () => {    // rendre éditable :  
@@ -244,7 +311,10 @@ const updateCalendar = async () => {
     }
   }
  if(props.newAesh){
-  console.log("readytoedit",editedCells)
+  const heureEnChiffres = hours.toString().padStart(2, "0")
+  const minutesEnChiffres = minutes.toString().padStart(2, "0")
+  setContrat(heureEnChiffres + ':' + minutesEnChiffres)
+  const HeuresReels = calculateTotalAesh(editedCells,rates) 
   try {
     const response = await fetch(`http://localhost:3000/aeshs/post`, {
       method: 'POST',
@@ -253,20 +323,30 @@ const updateCalendar = async () => {
       },
       body: JSON.stringify({
         prenom: prenom,
-        contrat : heuresAcc,
-        Planning: editedCells,      
-      })
-    });
-      setPrenom('');
-      setHeuresAcc('')
+        contrat: heureEnChiffres + ':' + minutesEnChiffres,
+        Planning: editedCells,
+        HeuresReels: HeuresReels,
+      }),
+    });  
+    if (response.ok) {
+      resetFields()
+      props.onSave()
+
+    } else {
+      console.error('Error updating calendar: Invalid response');
+    }
+    try {
+      await updateAllChildrenHours(rates);
       props.onSave();
+      setEditedCells([]);
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error updating child hours:', error);
+    } 
+  } 
+  catch (err) {
+    console.error('Error updating calendar:', err);
   }
-    
-catch (err) {
-  console.log('Error updating calendar:', err);
-}
-
-
 
  }    
     if(props.Aesh ){    
@@ -286,7 +366,9 @@ catch (err) {
           })
         })
         const data = await updatedAesh.json();
-        const heuresReels = calculateTotalAesh(data.Planning,rates);        try {
+        console.log("isdifférent", data.Planning)
+        const heuresReels = calculateTotalAesh(data.Planning,rates);       
+        try {
           const updatedAesh = await fetch(`http://localhost:3000/aeshs/updateHours/${props.Aesh._id}`, {
             method: 'PUT',
             headers: {
@@ -295,152 +377,215 @@ catch (err) {
             body: JSON.stringify({
               HeuresReels: heuresReels
             })
-          }) 
-          props.onSave(); 
+          })          
         }
           catch (err) {
             console.log('Error updating Hours', err);
           }
-
-        props.onSave(); 
-        console.log('Calendar updated:', updatedAesh);
-  
+        try {
+          await updateAllChildrenHours(rates);
+          props.onSave();
+          setEditedCells([]);
+          setIsEditing(false);
+        } catch (error) {
+          console.error('Error updating child hours:', error);
+        } 
       } catch (err) {
       console.log('Error updating calendar:', err);
     }
-
-    setEditedCells([]);
-    setIsEditing(false);
   }
   if (props.child) {
-    const heureEnChiffres = hours.toString().padStart(2, "0")
-    const minutesEnChiffres = minutes.toString().padStart(2, "0")
-    setHeures(heureEnChiffres + ':' + minutesEnChiffres)
-   
+    const heureEnChiffres = hours.toString().padStart(2, "0");
+    const minutesEnChiffres = minutes.toString().padStart(2, "0");
+    setHeures(heureEnChiffres + ':' + minutesEnChiffres);
+  
     try {
-      const response = await fetch("http://localhost:3000/enfants/update", {
+      // Update the child
+      await fetch("http://localhost:3000/enfants/update", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           enfantID: props.id,
-          prenom: oldPrenom,          
+          prenom: oldPrenom,
           heures: heureEnChiffres + ':' + minutesEnChiffres,
-          classe: selectedCategory ,
-          prof: selectedValue,
-        }),
-      });
-      const data = await response.json();
-
-    } catch (error) {
-      console.error(error);
-    }
-    try {
-      for (const cell of editedCells) {
-        const { day, shift, value, addTo } = cell;   
-
-            await fetch(`http://localhost:3000/aeshs/editKid/${addTo}`, {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                Planning: cell
-              })
-            });
-          
-        } 
-           const total = await calculhour(props.id, rates);
-        setTotalTime(total);
-
-      await fetch("http://localhost:3000/enfants/updateHeures", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          enfantID:  props.id,
-          HeuresReels: total,
-        }),
-      });
-      props.onSave();
-      setEditedCells([]);
-      setIsEditing(false);
-      }
-      catch (err) {
-        console.log('Error updating calendar:', err);
-      }    
-     
-      
-  }
-  if(props.newChild){
-    try {
-      const response = await fetch(`http://localhost:3000/enfants/post`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          prenom: prenom,
           classe: selectedCategory,
           prof: selectedValue,
-          heures: heuresAcc,
-          hReel: heurresReals
-        })
+        }),
       });
-      if (response.ok) {
-        const responseData = await response.json();
-        const idNewKid = responseData.kid._id
-        for (const cell of editedCells) {
-          const { day, shift, addTo } = cell;
-          cell.value = idNewKid;
-          try {
-            await fetch(`http://localhost:3000/aeshs/editKid/${addTo}`, {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                Planning: cell
-              })
-            });
-          } catch (err) {
-            console.log('Error updating calendar:', err);
-          }
-        }
-        const total = await calculhour(idNewKid, rates);
-        setTotalTime(total);
-
+  
+      // Loop through the editedCells
+      for (const cell of editedCells) {
+        const { addTo } = cell;
+  
+        // Update the Aesh planning
+        await fetch(`http://localhost:3000/aeshs/editKid/${addTo}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            Planning: cell
+          })
+        });
+  
+        // Get the planning
+        const planningResponse = await fetch(`http://localhost:3000/aeshs/getOne/${addTo}`);
+        const planningData = await planningResponse.json();
+        const planning = transformPlanningData(planningData.Planning);
+  
+        // Calculate the hours
+        const heuresReels = calculateTotalAesh(planning, rates);
+  
+        // Update the hours
+        await fetch(`http://localhost:3000/aeshs/updateHours/${addTo}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            HeuresReels: heuresReels
+          })
+        });
+      }
+  
+      // Update total time and reset fields
+      const total = await calculhour(props.id, rates);
+      setTotalTime(total);
       await fetch("http://localhost:3000/enfants/updateHeures", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          enfantID: idNewKid,
+          enfantID: props.id,
           HeuresReels: total,
         }),
       });
-      setPrenom('');
-      props.onSave();
-      } else {
-        console.log('Erreur HTTP :', response.status);
-        // gérer l'erreur...
-      }
-    } catch (error) {
-      console.log('Erreur de la requête :', error.message);
-      // gérer l'erreur...
-    }
-   
-
   
+      await updateAllChildrenHours(rates);
+      resetFields();
+      setIsEditing(false)
+      props.onSave();
+  
+    } catch (err) {
+      console.error('Error:', err);
+    }
   }
+  if (props.newChild) {
+    const heuresReels = calculateTotalAesh(editedCells,rates)
+    const heureEnChiffres = hours.toString().padStart(2, "0")
+    const minutesEnChiffres = minutes.toString().padStart(2, "0")
+    setHeuresAcc(heureEnChiffres + ':' + minutesEnChiffres)   
+   const requestBody = {
+      prenom: prenom,
+      classe: selectedCategory,
+      prof: selectedValue,
+      heures: heureEnChiffres + ':' + minutesEnChiffres,
+      hReel: heuresReels,
+      planning: editedCells,
+      rates: rates,
+    };
+
+    console.log("body to send",requestBody)
+  
+    fetch("http://localhost:3000/enfants/postAndEdit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(requestBody)
+    })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          console.log("Erreur HTTP :", response.status);
+          // Handle the error...
+          throw new Error("HTTP error");
+        }
+      })
+      .then(async responseData => {
+        const idNewKid = responseData.kid._id;      
+        const total = await calculhour(idNewKid, rates);
+        console.log("on calcule le total :", total)
+        setTotalTime(total);      
+        fetch("http://localhost:3000/enfants/updateHeures", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            enfantID: idNewKid, // Use the new child's ID
+            HeuresReels: total,
+          }),
+        })
+          .then((response) => {
+            if (response.ok) {
+              return response.json();
+            } else {
+              console.log("Erreur HTTP :", response.status);
+              // Handle the error...
+              throw new Error("HTTP error");
+            }
+          })
+          .then(async () => {          
+            // Loop through the editedCells
+            for (const cell of editedCells) {
+              const aeshId = cell.addTo;
+              // Get the planning
+              const planningResponse = await fetch(`http://localhost:3000/aeshs/getOne/${aeshId}`);
+              console.log("1",planningResponse)
+
+              const planningData = await planningResponse.json();
+              console.log("2",planningData)
+
+              const planning = transformPlanningData(planningData.Planning);
+              console.log("3",planning)
+          
+              // Calculate the hours
+              const heuresReels = calculateTotalAesh(planning, rates);
+              console.log("4",heuresReels)
+
+              console.log('5', aeshId)
+
+              // Update the hours
+              const updateAeshResponse = await fetch(`http://localhost:3000/aeshs/updateHours/${aeshId}`, {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  HeuresReels: heuresReels
+                })
+              });
+          
+              const updateAeshData = await updateAeshResponse.json();
+              console.log(`Update Aesh ${aeshId} response:`, updateAeshData);
+            }
+            try {
+              await updateAllChildrenHours(rates);
+              resetFields()
+              props.onSave();
+            } catch (error) {
+              console.error('Error updating child hours:', error);
+            }
+          })
+          .catch((error) => {
+            console.log("Erreur de la requête :", error.message);
+            // Handle the error...
+          });
+      })
+      .catch(error => {
+        console.log("Erreur de la requête :", error.message);
+        // Handle the error...
+      });
+  }
+
 
 
   };
-
-   console.log("aeshprops",props)
 
 return (
   <div className={props.classes ? styles.classemodal :styles.modal} >
@@ -462,6 +607,7 @@ return (
               <td key={colIndex}>
                 {isEditing ? (
                   <Select
+                  key={selectKey}
                     showSearch
                     placeholder="Ajouter"
                     allowClear
@@ -553,8 +699,8 @@ return (
             <span key="heures-accordees">{props.classes ? "" : "Heures"}</span>
            {isEditing ? (
             <div className={styles.hContainer} >
-            <InputNumber  style={{width: '55px' , padding: '0px'}} className={styles.hour}   onChange={value => setHours(value)} min={0} max={50} defaultValue={hours}   />
-            <span className={styles.doublepoint}> : </span> <InputNumber   style={{width: '55px' , padding: '0px'}} className={styles.hour} onChange={(value) => setMinutes(value)} min={0} max={45} step={15} defaultValue={minutes}  />
+            <InputNumber key={selectKey + 1} style={{width: '55px' , padding: '0px'}} className={styles.hour}   onChange={value => setHours(value)} min={0} max={50} defaultValue={hours}   />
+            <span className={styles.doublepoint}> : </span> <InputNumber key={selectKey}  style={{width: '55px' , padding: '0px'}} className={styles.hour} onChange={(value) => setMinutes(value)} min={0} max={45} step={15} defaultValue={minutes}  />
             </div> 
             ): (
               <span>{props.child.Heures}</span>
@@ -580,21 +726,21 @@ return (
             <span key="classe">Classe :</span>
             <span key="classe-valeur">
               {" "}
-              <Select defaultValue={selectedCategory} style={{ width: 100 }} onChange={handleCategoryChange} options={categoryOptions} placeholder="Select a category" />
+              <Select  key={selectKey} defaultValue={selectedCategory} style={{ width: 100 }} onChange={handleCategoryChange} options={categoryOptions} placeholder="Select a category" />
             </span>
           </div>
           <div className={styles.rightSideDiv}>
             <span key="prof">Prof :</span>
             <span key="prof-valeur">
               {" "}
-              <Select value={selectedValue} style={{ width: 100 }} onChange={handleValueChange} options={valueOptions} placeholder="Select a value" disabled={selectedCategory === ""} />
+              <Select   key={selectKey} value={selectedValue} style={{ width: 100 }} onChange={handleValueChange} options={valueOptions} placeholder="Select a value" disabled={selectedCategory === ""} />
             </span>
           </div>
           <div className={styles.rightSideDiv} >
           <span key="heures-accordees">{props.classes ? "" : "Heures"}</span>
           <div className={styles.hContainer} >
-            <InputNumber  style={{width: '55px' , padding: '0px'}} className={styles.hour}   onChange={value => setHours(value)} min={0} max={50} defaultValue={hours}   />
-            <span className={styles.doublepoint}> : </span> <InputNumber   style={{width: '55px' , padding: '0px'}} className={styles.hour} onChange={(value) => setMinutes(value)} min={0} max={59} defaultValue={minutes}  />
+            <InputNumber    style={{width: '55px' , padding: '0px'}} className={styles.hour}   onChange={value => setHours(value)} min={0} max={50} value={hours}   />
+            <span className={styles.doublepoint}> : </span> <InputNumber      style={{width: '55px' , padding: '0px'}} className={styles.hour} onChange={(value) => setMinutes(value)} min={0} step={15} max={45} value={minutes}  />
             </div> 
             
           </div>
@@ -647,18 +793,20 @@ return (
       )}
       {props.newAesh  && (
         <>
-          <div>
+          <div className={styles.rightSideDiv}>
             <span key="prenom">Prénom :</span>
             <Input placeholder="Prénom" onChange={(e) => setPrenom(e.target.value)} value={prenom} />          </div>
-          <div>
+          <div className={styles.rightSideDiv}>
             <span key="contrat">Contrat :</span>
-            <Input placeholder="Contrat" onChange={(e) => setHeuresAcc(e.target.value)} value={heuresAcc} />
-          </div>
-          <div>
+            <div className={styles.hContainer} >
+            <InputNumber  style={{width: '55px' , padding: '0px'}} className={styles.hour}   onChange={value => setHours(value)} min={0} max={50} defaultValue={hours}   />
+            <span className={styles.doublepoint}> : </span> <InputNumber   style={{width: '55px' , padding: '0px'}} className={styles.hour} onChange={(value) => setMinutes(value)} min={0} max={45} step={15} defaultValue={minutes}  />
+            </div>           </div>
+          <div className={styles.rightSideDiv}>
             <span key="hReals">Heures Réelles :</span>
             <span key="hReals-valeur">{heurresReals}</span>
           </div>
-          <div>
+          <div className={styles.rightSideDiv}>
             <span key="diff">Différence :</span>
             <span key="diff-valeur">{diff}</span>
           </div>

@@ -20,6 +20,37 @@
     padding-left: 2%;
     padding-right: 2%;
   }
+  .contentH {
+    background-color: #fff;
+    padding: 5px;
+    margin: 2px;
+    border-radius: 5px;
+    width: 600px;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 3%), 0 1px 6px -1px rgb(0 0 0 / 2%), 0 2px 4px 0 rgb(0 0 0 / 2%);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-left: 2%;
+    padding-right: 2%;
+    padding-bottom: 2%;
+    height: 120px;
+  }
+  
+  .horaires {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .columnHeader,
+  .rowHoraires {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    align-items: center;
+    justify-items: center;
+  }
+
   .classes  {
     background-color: #fff;
     padding : 5px;

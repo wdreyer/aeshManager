@@ -26,6 +26,7 @@ function calculhour(id, rates) {
         let minutes = total % 60;
         const totalTime = hours.toString().padStart(2, "0") +
             ":" + minutes.toString().padStart(2, "0");
+        console.log("totaltime",totalTime);
         resolve(totalTime);
       })
       .catch((error) => reject(error));

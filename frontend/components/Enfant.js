@@ -6,10 +6,12 @@
  import {  useSelector } from 'react-redux';
  import { AiOutlineSave,AiOutlineUser, AiOutlineEdit, AiOutlineDelete, AiOutlineCalendar } from "react-icons/ai";
 import { useState,useEffect } from "react";
+import { calculhour } from "../modules/calculHour";
 
 function Enfant(props) {
+
+  
    const schedule = props.Planning;
-   const rates = props.rates;
    const { confirm } = Modal;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditable, setEditable] = useState(false);
@@ -20,12 +22,23 @@ function Enfant(props) {
   const [heuresReels, setheuresReels] = useState(props.HeuresReels)
   const settings = useSelector((state) => state.users.settings);
   const classes = settings.Classes || [];
+  let intRates = {};
+  if (settings) {
+    intRates.Matin1 = subtractTime(settings.Matin1?.hEnd, settings.Matin1?.hStart);
+    intRates.Matin2 = subtractTime(settings.Matin2?.hEnd, settings.Matin2?.hStart);
+    intRates.Amidi1 = subtractTime(settings.AMidi1?.hEnd, settings.AMidi1?.hStart);
+    intRates.Amidi2 = subtractTime(settings.AMidi2?.hEnd, settings.AMidi2?.hStart);
+  }
+  const rates = intRates;   
 
 useEffect(() => {
   const [heureEnChiffres, minutesEnChiffres] = props.Heures.split(":").map(Number);
   setHours(heureEnChiffres);
   setMinutes(minutesEnChiffres);
+
 }, []);
+
+
 
 
 function getClass(classe) {
@@ -264,7 +277,7 @@ function getClass(classe) {
           open={isModalOpen}
           width={900}
         > 
-        <Planning id={props._id} heuresReels={heuresReels}  prenom={prenom} child={props} onSave={props.onSave} planningChild={props.planningChild}/>      
+        <Planning id={props._id} heuresReels={heuresReels}  prenom={prenom} child={props} onSave={props.onSave}   planningChild={props.planningChild}/>      
         </Modal>       
       </div>
     </>
